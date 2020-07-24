@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.dao.system.RoleDao">
+  <resultMap id="roleMap" type="Role">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    code, name, description, created_at, updated_at, created_by, updated_by, remark,
+    is_delete
+  </sql>
+  <sql id="table">role</sql>
+
+    <select id="getRoleList"  parameterType="Map"  resultMap="roleMap">
+        SELECT id, <include refid="Base_Column_List"/>
+        FROM <include refid="table"/>
+        WHERE is_delete = 0
+        <include refid="roleQuery"/>
+        Order By id DESC
+      LIMIT #{start},#{size}
+    </select>
+
+  <select id="getRoleListCount"  parameterType="Map"  resultType="Integer">
+    SELECT COUNT(id)
+    FROM <include refid="table"/>
+    WHERE is_delete = 0
+    <include refid="roleQuery"/>
+  </select>
+
+    <sql id="roleQuery">
+        <if test="name != null and name != ''">
+            AND name = #{name}
+        </if>
+        <if test="description != null">
+            AND description = #{description}
+        </if>
+    </sql>
+
+    <select id="getByName" resultMap="roleMap" parameterType="java.lang.String">
+        select id, <include refid="Base_Column_List"/>
+        from <include refid="table"/>
+        where name = #{name}
+    </select>
+
+  <select id="getById" parameterType="java.lang.Integer" resultMap="roleMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 查询所有 -->
+  <select id="getAll" resultMap="roleMap">
+    SELECT id, <include refid="Base_Column_List"/>
+    FROM <include refid="table"/>
+    <include refid="condition"/>
+    ORDER BY id DESC
+  </select>
+
+  <sql id="condition">
+    <where>
+      is_delete = 0
+      <if test="code!=null">
+        AND code = #{code}
+      </if>
+      <if test="name!=null">
+        AND name = #{name}
+      </if>
+    </where>
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="Role" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO <include refid="table"/>(<include refid="Base_Column_List"/>)
+        VALUES(
+        #{code},
+        #{name},
+        #{description},
+        now(),
+        now(),
+        #{createdBy},
+        #{updatedBy},
+        #{remark},
+        0
+        )
+    </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="Role">
+    update role
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+    <select id="getUserRoles" parameterType="long" resultMap="roleMap">
+        <![CDATA[
+		SELECT r.id, r.name
+		  FROM role r, user_role ur
+		 WHERE r.id = ur.role_id
+		   and ur.user_id = #{userId}
+		]]>
+    </select>
+  
+</mapper>

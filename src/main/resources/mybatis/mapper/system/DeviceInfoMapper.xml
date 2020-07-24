@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.dao.system.DeviceInfoDao">
+  <resultMap id="DeviceInfoMap" type="DeviceInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="serial_no" jdbcType="VARCHAR" property="serialNo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="status"  property="status" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="department_id" jdbcType="INTEGER" property="departmentId" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="parent_nick_name" jdbcType="TIMESTAMP" property="parentNickName" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="sim_no" jdbcType="VARCHAR" property="simNo" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="active_at" property="activeAt" jdbcType="TIMESTAMP" />
+    <result column="is_install" property="isInstall" jdbcType="TINYINT" />
+    <result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+    <result column="province_code" property="provinceCode" jdbcType="VARCHAR" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="city_code" property="cityCode" jdbcType="VARCHAR" />
+    <result column="region_name" property="regionName" jdbcType="VARCHAR" />
+    <result column="region_code" property="regionCode" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    type, serial_no, name, status, ip,
+    department_id, department_name, parent_id, parent_nick_name,
+    created_at, updated_at,
+    created_by, updated_by, remark, is_delete,
+    sim_no, version,
+    active_at, is_install, province_name, province_code, city_name,
+    city_code, region_name, region_code, address, position, longitude, latitude
+  </sql>
+
+  <sql id="table">device_info</sql>
+
+  <select id="getById" parameterType="java.lang.Integer" resultMap="DeviceInfoMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getBySerialNo" parameterType="String" resultMap="DeviceInfoMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where serial_no = #{serialNo,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="DeviceInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into <include refid="table"/> (<include refid="Base_Column_List"/>)
+    values (#{type,jdbcType=VARCHAR}, #{serialNo,jdbcType=VARCHAR},#{name}, #{status}, #{ip},
+    #{departmentId}, #{departmentName,jdbcType=VARCHAR},  #{parentId}, #{parentNickName},
+       #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP},
+      #{createdBy,jdbcType=VARCHAR}, #{updatedBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 0,
+      #{simNo,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR},
+    #{activeAt,jdbcType=TIMESTAMP},
+    #{isInstall,jdbcType=TINYINT}, #{provinceName,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR},
+    #{cityName,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{regionName,jdbcType=VARCHAR},
+    #{regionCode,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR},
+    #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL})
+  </insert>
+
+  <update id="update" parameterType="DeviceInfo">
+    update <include refid="table"/>
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNo != null">
+        serial_no = #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null">
+        department_id = #{departmentId},
+      </if>
+      <if test="departmentName != null">
+        department_name = #{departmentName},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId},
+      </if>
+      <if test="parentNickName != null">
+        parent_nick_name = #{parentNickName},
+      </if>
+
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="simNo != null">
+        sim_no = #{simNo,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="activeAt != null" >
+        active_at = #{activeAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isInstall != null" >
+        is_install = #{isInstall,jdbcType=TINYINT},
+      </if>
+      <if test="provinceName != null" >
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null" >
+        province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null" >
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null" >
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="regionName != null" >
+        region_name = #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionCode != null" >
+        region_code = #{regionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <sql id="condition">
+    <where>
+      is_delete = 0
+      <if test="type!=null">
+        AND type = #{type}
+      </if>
+      <if test="serialNo!=null">
+        AND serial_no = #{serialNo}
+      </if>
+      <if test="status!=null">
+        AND status = #{status}
+      </if>
+      <if test="departmentId!=null">
+        AND department_id=#{departmentId}
+      </if>
+    </where>
+  </sql>
+
+  <select id="queryListBy" resultMap="DeviceInfoMap" parameterType="map">
+    SELECT id, <include refid="Base_Column_List"/>
+    FROM <include refid="table"/>
+    <include refid="condition"/>
+    ORDER BY id DESC
+    LIMIT #{start},#{size}
+  </select>
+
+  <select id="queryCountBy" resultType="Integer" parameterType="map">
+    SELECT COUNT(id)
+    FROM <include refid="table"/>
+    <include refid="condition"/>
+  </select>
+
+  
+</mapper>

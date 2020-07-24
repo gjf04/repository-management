@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.dao.system.ResourceInfoDao">
+  <resultMap id="resourceInfoMap" type="ResourceInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="order_index" jdbcType="INTEGER" property="orderIndex" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    code, name, description, url, type, `order_index`, parent_id, created_at, updated_at, created_by,updated_by, remark, is_delete
+  </sql>
+
+  <sql id="table">resource_info</sql>
+
+  <select id="getById" parameterType="java.lang.Integer" resultMap="resourceInfoMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 查询所有 -->
+  <select id="getAll" resultMap="resourceInfoMap">
+    SELECT id, <include refid="Base_Column_List"/>
+     FROM <include refid="table"/>
+     <include refid="condition"/>
+  </select>
+
+  <sql id="condition">
+    <where>
+      <if test="code!=null">
+        AND code = #{code}
+      </if>
+      <if test="name!=null">
+        AND name = #{name}
+      </if>
+      <if test="type!=null">
+        AND type = #{type}
+      </if>
+      <if test="parentId!=null">
+        AND parent_id = #{parentId}
+      </if>
+    </where>
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="ResourceInfo">
+    insert into <include refid="table"/> (id, code, name,
+      description, url, type, 
+      order_index, parent_id, created_at, updated_at,
+      created_by, updated_by, remark, 
+      is_delete)
+    values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+      #{orderIndex,jdbcType=INTEGER},#{parentId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP},
+      #{createdBy,jdbcType=VARCHAR}, #{updatedBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{isDelete,jdbcType=BIT})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="ResourceInfo">
+    update <include refid="table"/>
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="orderIndex != null">
+        order_index = #{orderIndex,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getByUserId" parameterType="java.lang.Long" resultMap="resourceInfoMap">
+    select r.id, r.code, r.name, r.description, r.url, r.type, r.`order_index`, r.parent_id
+    from resource_info r
+    where r.is_delete = 0 and
+    (
+      r.type = 0 or r.id in
+      (
+        select DISTINCT ri.parent_id
+        from resource_info ri
+        INNER JOIN role_resource rr on rr.resource_id = ri.id
+        INNER JOIN user_role ur on ur.role_id = rr.role_id
+        where ri.type = 2 and ri.is_delete = 0 and ur.user_id = #{userId,jdbcType=INTEGER}
+      )
+    )
+    ORDER BY r.type, r.`order_index`
+  </select>
+
+  <select id="getButtonCodeByUserId" parameterType="java.lang.Long" resultType="String">
+    select r.code
+    from resource_info r
+    INNER JOIN role_resource rr on rr.resource_id = r.id
+    INNER JOIN user_role ur on ur.role_id = rr.role_id
+    where r.type = 2 and r.is_delete = 0 and ur.user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="getModuleCodeByUserId" parameterType="java.lang.Long" resultType="String">
+    select r.code
+    from resource_info r
+    INNER JOIN role_resource rr on rr.resource_id = r.id
+    INNER JOIN user_role ur on ur.role_id = rr.role_id
+    where r.type = 1 and r.is_delete = 0 and ur.user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

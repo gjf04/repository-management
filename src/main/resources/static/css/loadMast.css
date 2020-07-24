@@ -1,0 +1,22 @@
+.hz_loadMast {
+	filter:alpha(opacity=50);
+	-moz-opacity:0.5;
+	-khtml-opacity: 0.5;
+	opacity: 0.5;
+	z-index : 9999;
+	background-color:#E3E0D5;
+	position:fixed;
+	top:0px;
+	left:0px;
+}
+.hz_loadMast_message {
+	background: url('../images/loading.gif') no-repeat 10px 10px;
+	height: 36px;
+	z-index : 99999;
+	border : 2px solid #d3d3d3; 
+	width :auto;
+	position: fixed;
+	line-height: 36px;
+	padding-left: 30px;
+	background-color: white;
+}

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.dao.system.UserInfoDao">
+  <resultMap id="userInfoMap" type="UserInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="status"  property="status" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="identity_no" jdbcType="VARCHAR" property="identityNo" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="parent_nick_name" jdbcType="VARCHAR" property="parentNickName" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+
+    <result column="roleName" jdbcType="VARCHAR" property="roleName" />
+    <result column="departmentName" jdbcType="VARCHAR" property="departmentName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_name, password, status, sex, mobile, email, nick_name, birthday, identity_no, address, parent_id, parent_nick_name,
+    created_at, updated_at,
+    created_by, updated_by, remark, is_delete
+  </sql>
+
+  <sql id="table">user_info</sql>
+
+  <select id="getById" parameterType="java.lang.Long" resultMap="userInfoMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getByUserName" parameterType="java.lang.String" resultMap="userInfoMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where user_name = #{userName,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="UserInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into <include refid="table"/> (user_name, password,
+      status, sex, mobile, email, 
+      nick_name, birthday, identity_no, address, parent_id, parent_nick_name,
+      created_at, updated_at,
+      created_by, updated_by, remark, 
+      is_delete)
+    values (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{status}, #{sex,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+      #{nickName,jdbcType=VARCHAR}, #{birthday},  #{identityNo}, #{address}, #{parentId}, #{parentNickName},
+       #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP},
+      #{createdBy,jdbcType=VARCHAR}, #{updatedBy,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      0)
+  </insert>
+
+  <update id="update" parameterType="UserInfo">
+    update user_info
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday},
+      </if>
+      <if test="identityNo != null">
+        identity_no = #{identityNo},
+      </if>
+      <if test="address != null">
+        address = #{address},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId},
+      </if>
+      <if test="parentNickName != null">
+        parent_nick_name = #{parentNickName},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <sql id="condition">
+    <where>
+      u.is_delete = 0
+      <if test="userName!=null">
+        AND u.user_name = #{userName}
+      </if>
+      <if test="mobile!=null">
+        AND u.mobile = #{mobile}
+      </if>
+      <if test="nickName!=null">
+        AND u.nick_name = #{nickName}
+      </if>
+      <if test="departmentId!=null">
+        AND u.id in(select ud.user_id from user_department ud where ud.department_id=#{departmentId})
+      </if>
+    </where>
+  </sql>
+
+  <select id="queryListBy" resultMap="userInfoMap" parameterType="map">
+    SELECT u.id, u.user_name, u.status, u.sex, u.mobile, u.email, u.nick_name, u.birthday, u.identity_no, u.address, u.parent_id, u.parent_nick_name,
+    r.name roleName, d.name departmentName
+    FROM user_info u LEFT JOIN user_role ur on ur.user_id = u.id
+    LEFT JOIN user_department ud on ud.user_id = u.id
+    LEFT JOIN role r on ur.role_id = r.id
+    LEFT JOIN department d on ud.department_id = d.id
+    <include refid="condition"/>
+    ORDER BY u.id DESC
+    LIMIT #{start},#{size}
+  </select>
+
+  <select id="queryCountBy" resultType="Integer" parameterType="map">
+    SELECT COUNT(u.id)
+    FROM user_info u INNER JOIN user_role ur on ur.user_id = u.id
+    LEFT JOIN user_department ud on ud.user_id = u.id
+    LEFT JOIN role r on ur.role_id = r.id
+    LEFT JOIN department d on ud.department_id = d.id
+    <include refid="condition"/>
+  </select>
+
+  <select id="getAll" resultMap="userInfoMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where is_delete = 0 and user_name != 'admin'
+  </select>
+
+  <select id="getUserByRoleId" resultMap="userInfoMap" parameterType="java.lang.Long">
+    SELECT u.id, u.user_name, u.status, u.sex, u.mobile, u.email, u.nick_name,
+    u.birthday, u.identity_no, u.address, u.parent_id, u.parent_nick_name
+    FROM user_info u INNER JOIN user_role ur on ur.user_id = u.id
+    where u.is_delete = 0 and ur.role_id = #{roleId}
+    ORDER BY u.nick_name
+  </select>
+  
+</mapper>

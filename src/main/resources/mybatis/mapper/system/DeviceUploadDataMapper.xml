@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.dao.system.DeviceUploadDataDao" >
+  <resultMap id="BaseResultMap" type="DeviceUploadData" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serial_no" property="serialNo" jdbcType="VARCHAR" />
+    <result column="sim_code" property="simCode" jdbcType="VARCHAR" />
+    <result column="telecom_operator" property="telecomOperator" jdbcType="VARCHAR" />
+    <result column="dbm" property="dbm" jdbcType="DECIMAL" />
+    <result column="power" property="power" jdbcType="DECIMAL" />
+    <result column="box_temperature" property="boxTemperature" jdbcType="DECIMAL" />
+    <result column="residual_current" property="residualCurrent" jdbcType="DECIMAL" />
+    <result column="a_voltage" property="aVoltage" jdbcType="DECIMAL" />
+    <result column="a_temperature" property="aTemperature" jdbcType="DECIMAL" />
+    <result column="a_current" property="aCurrent" jdbcType="DECIMAL" />
+    <result column="b_voltage" property="bVoltage" jdbcType="DECIMAL" />
+    <result column="b_temperature" property="bTemperature" jdbcType="DECIMAL" />
+    <result column="b_current" property="bCurrent" jdbcType="DECIMAL" />
+    <result column="c_voltage" property="cVoltage" jdbcType="DECIMAL" />
+    <result column="c_temperature" property="cTemperature" jdbcType="DECIMAL" />
+    <result column="c_current" property="cCurrent" jdbcType="DECIMAL" />
+    <result column="smoke_alarm" property="smokeAlarm" jdbcType="INTEGER" />
+    <result column="infrared_alarm" property="infraredAlarm" jdbcType="INTEGER" />
+    <result column="air_switch" property="airSwitch" jdbcType="INTEGER" />
+    <result column="alarm" property="alarm" jdbcType="INTEGER" />
+    <result column="collect_time" property="collectTime" jdbcType="TIMESTAMP" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    serial_no, sim_code, telecom_operator, dbm, power, box_temperature, residual_current,
+    a_voltage, a_temperature, a_current, b_voltage, b_temperature, b_current, c_voltage, 
+    c_temperature, c_current, smoke_alarm, infrared_alarm, air_switch, alarm, collect_time, 
+    created_at
+  </sql>
+
+  <sql id="table">device_upload_data</sql>
+
+  <select id="getById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" parameterType="DeviceUploadData"  useGeneratedKeys="true" keyProperty="id">
+    insert into <include refid="table"/> (<include refid="Base_Column_List"/>)
+    values ( #{serialNo,jdbcType=VARCHAR}, #{simCode,jdbcType=VARCHAR},
+      #{telecomOperator,jdbcType=VARCHAR}, #{dbm,jdbcType=DECIMAL}, #{power,jdbcType=DECIMAL}, 
+      #{boxTemperature,jdbcType=DECIMAL}, #{residualCurrent,jdbcType=DECIMAL}, #{aVoltage,jdbcType=DECIMAL}, 
+      #{aTemperature,jdbcType=DECIMAL}, #{aCurrent,jdbcType=DECIMAL}, #{bVoltage,jdbcType=DECIMAL}, 
+      #{bTemperature,jdbcType=DECIMAL}, #{bCurrent,jdbcType=DECIMAL}, #{cVoltage,jdbcType=DECIMAL}, 
+      #{cTemperature,jdbcType=DECIMAL}, #{cCurrent,jdbcType=DECIMAL}, #{smokeAlarm,jdbcType=INTEGER}, 
+      #{infraredAlarm,jdbcType=INTEGER}, #{airSwitch,jdbcType=INTEGER}, #{alarm,jdbcType=INTEGER}, 
+      #{collectTime,jdbcType=TIMESTAMP}, #{createdAt,jdbcType=TIMESTAMP})
+  </insert>
+
+  <update id="update" parameterType="DeviceUploadData" >
+    update <include refid="table"/>
+    <set >
+      <if test="serialNo != null" >
+        serial_no = #{serialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="simCode != null" >
+        sim_code = #{simCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telecomOperator != null" >
+        telecom_operator = #{telecomOperator,jdbcType=VARCHAR},
+      </if>
+      <if test="dbm != null" >
+        dbm = #{dbm,jdbcType=DECIMAL},
+      </if>
+      <if test="power != null" >
+        power = #{power,jdbcType=DECIMAL},
+      </if>
+      <if test="boxTemperature != null" >
+        box_temperature = #{boxTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="residualCurrent != null" >
+        residual_current = #{residualCurrent,jdbcType=DECIMAL},
+      </if>
+      <if test="aVoltage != null" >
+        a_voltage = #{aVoltage,jdbcType=DECIMAL},
+      </if>
+      <if test="aTemperature != null" >
+        a_temperature = #{aTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="aCurrent != null" >
+        a_current = #{aCurrent,jdbcType=DECIMAL},
+      </if>
+      <if test="bVoltage != null" >
+        b_voltage = #{bVoltage,jdbcType=DECIMAL},
+      </if>
+      <if test="bTemperature != null" >
+        b_temperature = #{bTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="bCurrent != null" >
+        b_current = #{bCurrent,jdbcType=DECIMAL},
+      </if>
+      <if test="cVoltage != null" >
+        c_voltage = #{cVoltage,jdbcType=DECIMAL},
+      </if>
+      <if test="cTemperature != null" >
+        c_temperature = #{cTemperature,jdbcType=DECIMAL},
+      </if>
+      <if test="cCurrent != null" >
+        c_current = #{cCurrent,jdbcType=DECIMAL},
+      </if>
+      <if test="smokeAlarm != null" >
+        smoke_alarm = #{smokeAlarm,jdbcType=INTEGER},
+      </if>
+      <if test="infraredAlarm != null" >
+        infrared_alarm = #{infraredAlarm,jdbcType=INTEGER},
+      </if>
+      <if test="airSwitch != null" >
+        air_switch = #{airSwitch,jdbcType=INTEGER},
+      </if>
+      <if test="alarm != null" >
+        alarm = #{alarm,jdbcType=INTEGER},
+      </if>
+      <if test="collectTime != null" >
+        collect_time = #{collectTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <sql id="condition">
+    <where>
+      <if test="serialNo!=null">
+        AND serial_no = #{serialNo}
+      </if>
+
+    </where>
+  </sql>
+
+  <select id="queryListBy" resultMap="BaseResultMap" parameterType="map">
+    SELECT id, <include refid="Base_Column_List"/>
+    FROM <include refid="table"/>
+    <include refid="condition"/>
+    ORDER BY id DESC
+    LIMIT #{start},#{size}
+  </select>
+
+  <select id="queryCountBy" resultType="Integer" parameterType="map">
+    SELECT COUNT(id)
+    FROM <include refid="table"/>
+    <include refid="condition"/>
+  </select>
+
+</mapper>

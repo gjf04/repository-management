@@ -1,0 +1,65 @@
+.littleform {
+	margin: 0;
+	padding: 10px 30px;
+}
+
+.ftitle {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.fitem {
+	margin-bottom: 5px;
+}
+
+.fitem label {
+	display: inline-block;
+	width: 80px;
+}
+
+
+/*input form table style*/
+table.form_table {
+	border: 1px solid #CCCCCC;
+	background-color: #ffffff;
+	border-collapse: collapse;
+	width: 99%;
+}
+
+table.form_table td {
+	padding: 1px;
+	border-right: 1px solid #C0C0C0;
+	border-bottom: 1px solid #C0C0C0;
+}
+
+table.form_table th {
+	height: 24px; 
+	padding: 3px;
+	size:12px;
+	line-height: 16px;
+	color: #575765;
+	border-bottom: 1px solid #A4B5C2;
+	border-right: 1px solid #A4B5C2;
+	background-color:#F8F8F8;
+	text-align: left;
+}
+.star{
+	color: red;
+}
+
+/**消息提示**/
+.message-error{
+	background:#F8E9E9;
+	color:#B80000;
+	padding:12px;
+	margin-right: 10px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    border-width: 1px;
+    border-style:solid;
+    border-color: #E4BBBC;
+    font-weight: bold;
+}

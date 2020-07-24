@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/crm?serverTimezone=GMT%2B8&autoReconnect=true&zeroDateTimeBehavior=convertToNull
+    username: dev
+    password: dev123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maxLifetime: 28770000
+  activemq:
+    #ActiveMQ通讯地址
+    broker-url: tcp://localhost:61616
+    #用户名
+    user: admin
+    #密码
+    password: admin
+    #是否启用内存模式（就是不安装MQ，项目启动时同时启动一个MQ实例）
+    in-memory: false
+    packages:
+      #信任所有的包
+      trust-all: true
+    pool:
+      #是否替换默认的连接池，使用ActiveMQ的连接池需引入的依赖
+      enabled: false
+
+resources:
+  chain:
+   strategy:
+     content:
+       enabled: true
+       paths: /**
+   cache: false
+   compressed: false
+   enabled: false
+  cache:
+    cachecontrol:
+      cache-public: false
+
+server:
+  tomcat:
+    max-connections: 1000
+    max-threads: 1000
+    min-spare-threads: 100
+    accept-count: 300
+
+image:
+  allow:
+    type: png|jpg|jpeg|gif|bmp
