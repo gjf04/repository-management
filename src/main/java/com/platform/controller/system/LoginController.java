@@ -22,14 +22,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * Created by GaoJingFei on 2020/07/25.
+ */
+
 @Controller
 @Slf4j
 public class LoginController {  
     @Resource  
     private UserInfoService userInfoService;
-
-    @Resource
-    private ResourceInfoService resourceInfoService;
     
     @RequestMapping(value = "/loginCommit", method = { RequestMethod.POST })
 	@ResponseBody

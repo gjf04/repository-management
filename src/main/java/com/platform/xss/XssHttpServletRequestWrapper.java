@@ -5,6 +5,10 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.springframework.util.StringUtils;
 
+/**
+ * Created by gaojingfei on 2020/07/25.
+ */
+
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
 	HttpServletRequest orgRequest = null;

@@ -6,6 +6,7 @@ import org.apache.commons.lang.ObjectUtils;
 /**
  * 用来构建用户可访问的组织树形结构
  * @author GaoJingFei
+ * @time  2020-7-25
  *
  */
 public class DepartmentTreeNodeFactory extends TreeNodeFactory<Department> {

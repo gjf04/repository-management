@@ -14,6 +14,11 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
+/**
+ *
+ * Created by GaoJingFei on 2020/07/25.
+ */
+
 @Configuration
 public class DataSourceConfig {
 	@Value("${jdbc.driver-class-name}")

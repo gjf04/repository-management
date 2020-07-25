@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+/**
+ * Created by gaojingfei on 2020/07/25.
+ */
+
 public class WebUtil {
     protected static org.apache.log4j.Logger log = org.apache.log4j.LogManager
                                                      .getLogger(WebUtil.class);

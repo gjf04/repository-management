@@ -2,8 +2,8 @@ package com.platform.entity.util;
 
 /**
  * 下拉框信息的封装
- * @author GaoJinFei  
- * @time  2017-11-17
+ * @author GaoJingFei
+ * @time  2020-7-25
  */
 public class ComboBox {
 	private String id;

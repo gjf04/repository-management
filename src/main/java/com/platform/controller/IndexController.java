@@ -1,16 +1,10 @@
 package com.platform.controller;
 
 import com.gao.common.ServiceResult;
-import com.platform.entity.system.DeviceAlarmInfo;
-import com.platform.entity.system.DeviceInfo;
 import com.platform.entity.system.ResourceInfo;
 import com.platform.entity.system.UserInfo;
-import com.platform.service.system.DeviceAlarmInfoService;
-import com.platform.service.system.DeviceInfoService;
 import com.platform.service.system.ResourceInfoService;
 import com.platform.service.system.UserInfoService;
-import com.platform.util.ButtonConstant;
-import com.platform.util.ModuleConstant;
 import com.platform.util.SessionSecurityConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -23,6 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+/**
+ *
+ * Created by GaoJingFei on 2020/07/25.
+ */
 
 @Controller
 @RequestMapping("/")

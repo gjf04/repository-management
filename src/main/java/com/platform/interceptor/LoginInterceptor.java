@@ -9,6 +9,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Created by GaoJingFei on 2020/07/25.
+ */
+
 @Slf4j
 @Component
 public class LoginInterceptor extends HandlerInterceptorAdapter{

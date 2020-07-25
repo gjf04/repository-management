@@ -1,7 +1,7 @@
 package com.platform.util;
 
 /**
- * Created by gaojingfei on 2017/11/22.
+ * Created by gaojingfei on 2020/07/25.
  */
 public class SessionSecurityConstants {
     /**

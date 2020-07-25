@@ -14,11 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 
+/**
+ * @author gaojingfei
+ * 20200725
+ */
+
 public class ExcelExportUtil {
 
     /**
      * 导出Excel模板
-     * @author DHC 刘骥飞
      * @param response
      * @param fileName 文件名
      * @param sheetName 表单名

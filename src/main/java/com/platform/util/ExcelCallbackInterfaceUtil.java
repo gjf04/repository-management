@@ -3,7 +3,10 @@ package com.platform.util;
 import jxl.write.WritableSheet;
 
 import java.io.OutputStream;
-
+/**
+ * @author gaojingfei
+ * 20200725
+ */
 public interface ExcelCallbackInterfaceUtil {
 
     /**

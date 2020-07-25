@@ -20,6 +20,10 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Created by gaojingfei on 2020/07/25.
+ */
+
 @Slf4j
 public class XssFilter implements Filter {
 

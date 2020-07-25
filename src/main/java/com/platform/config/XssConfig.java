@@ -10,6 +10,11 @@ import org.springframework.core.annotation.Order;
 
 import com.google.common.collect.Maps;
 
+/**
+ *
+ * Created by GaoJingFei on 2020/07/25.
+ */
+
 @Order(1)
 @Configuration
 public class XssConfig {

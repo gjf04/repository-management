@@ -5,6 +5,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.resource.ResourceUrlProvider;
 
+/**
+ *
+ * Created by GaoJingFei on 2020/07/25.
+ */
+
 @ControllerAdvice
 public class ControllerConfig {
     @Autowired

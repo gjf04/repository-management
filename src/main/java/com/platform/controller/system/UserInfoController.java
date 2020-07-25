@@ -1,10 +1,5 @@
 package com.platform.controller.system;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.platform.entity.system.UserDepartment;
 import com.platform.entity.system.UserInfo;
 import com.platform.entity.system.UserRole;
@@ -28,7 +23,6 @@ import jxl.format.BorderLineStyle;
 import jxl.format.UnderlineStyle;
 import jxl.write.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.LogManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

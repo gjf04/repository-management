@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * 通用树形组件，联合easyui中的tree组件使用
  * @author GaoJingFei
- * @since 3.0
+ * @time  2020-7-25
  */
 public class TreeNode implements Serializable {
 	/**

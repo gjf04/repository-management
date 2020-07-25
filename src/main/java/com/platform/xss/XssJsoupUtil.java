@@ -4,6 +4,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Whitelist;
 
+/**
+ * Created by gaojingfei on 2020/07/25.
+ */
+
 public class XssJsoupUtil {
 	/**
 	 * 使用自带的basicWithImages 白名单

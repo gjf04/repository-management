@@ -1,26 +1,8 @@
 spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/crm?serverTimezone=GMT%2B8&autoReconnect=true&zeroDateTimeBehavior=convertToNull
-    username: dev
-    password: dev123
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maxLifetime: 28770000
-  activemq:
-    #ActiveMQ通讯地址
-    broker-url: tcp://localhost:61616
-    #用户名
-    user: admin
-    #密码
-    password: admin
-    #是否启用内存模式（就是不安装MQ，项目启动时同时启动一个MQ实例）
-    in-memory: false
-    packages:
-      #信任所有的包
-      trust-all: true
-    pool:
-      #是否替换默认的连接池，使用ActiveMQ的连接池需引入的依赖
-      enabled: false
+  freemarker:
+    cache: false
+    settings:
+      number_format: 0
 
 resources:
   chain:
@@ -37,11 +19,19 @@ resources:
 
 server:
   tomcat:
-    max-connections: 1000
     max-threads: 1000
     min-spare-threads: 100
     accept-count: 300
+  connection-timeout: 30000
 
 image:
   allow:
     type: png|jpg|jpeg|gif|bmp
+
+jdbc:
+  url: 1F0030AD817F268AA38320EDE1AAF675BAE6DC822CECB43D22FD474D95395349E17DCCD675FA6CBBC9E02477E257932A8CDC625BB7FEC18EC3F3AC6AA15263E0D78597EB81DE341F183D440DD36C891715889CEE8EF882D16E1C118D4A1F3750
+  username: D2A2150E6097A828
+  password: 3C735B2B0AFD4442922583FF75513E75
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  hikari:
+    maxLifetime: 28770000

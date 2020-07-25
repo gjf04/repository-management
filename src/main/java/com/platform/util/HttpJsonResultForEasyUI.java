@@ -1,5 +1,10 @@
 package com.platform.util;
 
+/**
+ * @author gaojingfei
+ * 20200725
+ */
+
 public class HttpJsonResultForEasyUI<T> extends HttpJsonResult<T> {
 
     /**

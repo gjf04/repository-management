@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author gaojingfei
+ * 20200725
+ */
+
 public class FreemarkerUtil {
     private static org.apache.log4j.Logger log = org.apache.log4j.LogManager
                                                    .getLogger(FreemarkerUtil.class);

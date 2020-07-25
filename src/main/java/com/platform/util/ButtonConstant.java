@@ -2,7 +2,7 @@ package com.platform.util;
 
 /**
  * 页面按钮编码常量
- * Created by Administrator on 2017/12/10.
+ * Created by GaoJingFei on 2020/07/25.
  */
 public class ButtonConstant {
     //部门管理-新增
@@ -31,6 +31,5 @@ public class ButtonConstant {
     //用户管理-审核通过
     public static final String USER_ADUIT_CODE= "100101104104";
 
-    //设备管理-新增
-    public static final String DEVICE_ADD_CODE= "100101105102";
+
 }

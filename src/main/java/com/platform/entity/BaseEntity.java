@@ -9,7 +9,8 @@ import java.util.Date;
 
 /**
  * 所有实体类的基类
- * @author gaojingfei
+ * @author GaoJingFei
+ * @time  2020-7-25
  *
  */
 @ToString

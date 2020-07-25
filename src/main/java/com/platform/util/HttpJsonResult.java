@@ -3,11 +3,10 @@ package com.platform.util;
 import java.io.Serializable;
 
 /**
- * 
- * @author Administrator
- * 
- * @param <T>
+ * @author gaojingfei
+ * 20200725
  */
+
 public class HttpJsonResult<T> implements Serializable {
     /**
      * 

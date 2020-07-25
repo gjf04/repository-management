@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * 用来构建树形结构的工厂接口
  * @author GaoJingFei
- * @since 3.0
+ * @time  2020-7-25
  */
 public abstract class TreeNodeFactory<T> {
 	public List<TreeNode> buildTreeNodeList(List<T> objects){

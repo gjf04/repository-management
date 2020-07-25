@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * @author gaojingfei
+ * 20200725
+ */
 public class CookieHelper {
     private static Logger log = LogManager.getLogger(CookieHelper.class);
 
@@ -42,8 +45,8 @@ public class CookieHelper {
 
     /**
      * 添加cookie
-     * @param cookList
-     * @param rs
+     * @param cookieName
+     * @param value
      */
 
     public static void addCookie(String cookieName, String value, String domain, String cookiePath,
@@ -58,7 +61,7 @@ public class CookieHelper {
 
     /**
      * 删除cookie
-     * @param cookList
+     * @param cookieName
      * @param rs
      */
     public static void delCookies(HttpServletResponse rs, String cookieName) {

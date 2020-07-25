@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
  *                       
  * @Filename: CommUtil.java
  * @Version: 1.0
- * @Author: weiyunjun
- * @Email: weiyunjun@ehaier.com
+ * @author gaojingfei
+ * @Email: gjf04@163.com
  *
  */
 public class CommUtil {
