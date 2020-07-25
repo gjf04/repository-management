@@ -1,0 +1,95 @@
+/* CSS Document */
+* {
+	margin: 0;
+	padding: 0
+}
+
+body {
+	font-size: 12px;
+	line-height: 20px;
+	font: 12px/1.5 tahoma,arial;
+	background-color: #e2e9ea;
+	color: #333
+}
+
+a {
+	color: #333;
+	text-decoration: none
+}
+
+a:hover {
+	color: #903;
+	text-decoration: underline
+}
+
+.clear {
+	clear: both
+}
+
+ul {
+	list-style: none
+}
+
+img {
+	border: none
+} 
+
+
+  /**/
+.top {
+	background-image: url(../images/top.jpg);
+	background-size: cover;
+	color: #fff;
+	min-width: 1024px;
+}
+
+.top a {
+	color: #fff;
+	padding: 0px 5px
+}
+
+.logotitle {
+	/*
+	background: url(../images/top.jpg) no-repeat;
+	*/
+	height: 80px
+}
+
+.to3dcbd {
+	text-align: right;
+	padding-right: 20px;
+}
+
+.nav {
+	float: left;
+	padding-left: 160px;
+}
+
+.nav li {
+	float: left;
+	background: url(../images/navbg.jpg) no-repeat;
+	width: 100px;
+	height: 34px;
+	text-align: center;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 35px;
+}
+
+.welcomequit {
+	float: right;
+	padding-top: 55px;
+	padding-right: 20px;
+}
+
+
+
+/*弹窗*/
+.popup{
+	width: 700px;
+	padding: 20px;
+	box-shadow: 5px 5px 5px #ccc;
+	z-index: 2;
+	display: flex;
+	align-self:center
+}

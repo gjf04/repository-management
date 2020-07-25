@@ -12,6 +12,10 @@
     
     <link href="${urls.getForLookupPath('/css/login.css')}" rel="stylesheet" />
     <script type="text/javascript">
+        window.onload = function(){
+            document.getElementById('userName').focus();
+        }
+
         //回车登录提交
         function keyLogin() {
             document.onkeydown=function mykeyDown(e){
@@ -88,10 +92,8 @@
             <td style="width:100%; height:100%; text-align:center;vertical-align:middle;">
                 <div class="LoginBox">
                     <div class="AppBox">
-                         <a href="/Login/AppDown" ><img src="${urls.getForLookupPath('/images/erweima.jpg')}" width="160" height="160" alt="下载手机客户端" /></a>
-                        <div class="appTitle">
-                            <a href="/Login/AppDown" >扫描二维码关注</a>
-                        </div>
+                         <img src="${urls.getForLookupPath('/images/login-form.jpg')}" width="160" height="160" alt="" />
+
                     </div>
                     <div class="LoginForm">
                         <div class="tdTitle">

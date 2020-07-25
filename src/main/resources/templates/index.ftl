@@ -1,260 +1,149 @@
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head >
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>智慧管理平台</title>
-    <link href="${urls.getForLookupPath('/css/bootstrap.min.css')}" rel="stylesheet"/>
-    <link href="${urls.getForLookupPath('/css/animate.css')}" rel="stylesheet" />
-    <script src="${urls.getForLookupPath('/js/jquery.min.js')}"></script>
-
-
-    <script type="text/javascript" src="${urls.getForLookupPath('/js/jQuery.cookie.js')}"></script>
-    <link href="${urls.getForLookupPath('/css/style.css')}" rel="stylesheet" />
-    <script type="text/javascript" src="${urls.getForLookupPath('/js/default.js')}"></script>
-    <link href="${urls.getForLookupPath('/css/Style2.css')}" rel="stylesheet" />
-
-    <link href="${urls.getForLookupPath('/css/jquery.fancybox.css')}" rel="stylesheet"/>
-
-    <script src="${urls.getForLookupPath('/js/jquery.fancybox.js')}"></script>
-
-    <script type="text/javascript">
-
-
-
-    </script>
-
-
-
-
+    <link href="${urls.getForLookupPath('/css/login_index.css')}" rel="stylesheet" />
+<#include "common/easyui_core.ftl"/>
+    <!-- 简单的样式 -->
+    <style type="text/css">
+        ul:hover {
+            cursor: pointer;
+        }
+        .footer .foot {
+            text-align: center;
+            color: #FFFFFF;
+        }
+    </style>
 </head>
-<body>
-
-
-
-<div class="contentBox contentMain contentActive">
-
-    <div class="HeadBox">
-        <div class="WebTitle">
-            智慧管理平台
+<body class="easyui-layout">
+<!---TOP S--->
+<div class="head" region="north" split="true"
+     style="height: 100px;">
+    <div class="top">
+        <div class="logotitle">
+            <div class="to3dcbd"> &nbsp;</div>
+            <div class="nav" style="font-size: 35px; color:#fff; line-height:70px;">
+                智慧管理平台
+            </div>
+            <div class="welcomequit">您好，<strong id="User" >${(user.nickName)!''}</strong>&nbsp;&nbsp;！ <a href="#" onclick="logoutCommit();">[退出]</a> <a href="#"> [网站首页]</a></div>
         </div>
-
-        <div class="leftMenu userTool"><a href="javascript:void(0);" onclick="window.top.changPwd()" title="修改密码"><img src="${urls.getForLookupPath('/images/password.png')}" /></a></div>
-
-
-        <div class="rightMenu userTool">
-            <a href="/login" title="注销登录" target="_top"><img src="${urls.getForLookupPath('/images/logout.png')}" /></a>
-        </div>
+        <div class="clear"></div>
     </div>
-    <div class="NavBodyBox">
-        <table class="NavTable">
-            <tr>
-                <td class="NavCell">
-                    <div class="NavMenuBox">
+</div>
+<!---TOP END--->
 
-                        <div class="LeftNavBox" style="left:100px;width:1100px;">
+<!---foot S--->
+<!-- 底部一般放版权什么的 -->
+<div class="footer" region="south" split="true" style="height: 10px;">
+    <div class="foot">
+        Copyright © 2020 All Rights Reserved 版权所有
+    </div>
+</div>
+<!---foot END--->
 
-
-
-                            <div class="MenuRow">
-
-                                <#--<#if showElecModule?? && showElecModule == "YES">-->
-                                <#--<div class="MenuItem" onclick="location.href='firePre.html'">-->
-                                    <#--<div class="MenuItem1" style="background-color:#2e8d95">-->
-                                        <#--<div class="MenuContent">-->
-                                            <#--<div class="MenuPic" style="background-image:url(${urls.getForLookupPath('/images/elec.png')})"></div>-->
-                                        <#--</div>-->
-                                        <#--<div class="MenuTitle">-->
-                                            <#--智慧用电管理-->
-                                        <#--</div>-->
-                                    <#--</div>-->
-                                <#--</div>-->
-                                <#--</#if>-->
-                                <#--<#if showSetModule?? && showSetModule == "YES">-->
-                                <#--<div class="MenuItem" onclick="location.href='/system/device.html'">-->
-                                    <#--<div class="MenuItem1" style="background-color:#2e8d95">-->
-                                        <#--<div class="MenuContent">-->
-                                            <#--<div class="MenuPic" style="background-image:url(${urls.getForLookupPath('/images/elec.png')})"></div>-->
-                                        <#--</div>-->
-                                        <#--<div class="MenuTitle">-->
-                                            <#--设备管理-->
-                                        <#--</div>-->
-                                    <#--</div>-->
-                                <#--</div>-->
-                                <#--</#if>-->
-                                <#if showUserModule?? && showUserModule == "YES">
-                                    <div class="MenuItem" onclick="location.href='/system/user.html'">
-                                        <div class="MenuItem1" style="background-color:#2e8d95">
-                                            <div class="MenuContent">
-                                                <div class="MenuPic" style="background-image:url(${urls.getForLookupPath('/images/elec.png')})"></div>
-                                            </div>
-                                            <div class="MenuTitle">
-                                                用户管理
-                                            </div>
-                                        </div>
-                                    </div>
-                                </#if>
-                                <#if showDepartmentModule?? && showDepartmentModule == "YES">
-                                <div class="MenuItem" onclick="location.href='/system/department.html'">
-                                    <div class="MenuItem1" style="background-color:#2e8d95">
-                                        <div class="MenuContent">
-                                            <div class="MenuPic" style="background-image:url(${urls.getForLookupPath('/images/elec.png')})"></div>
-                                        </div>
-                                        <div class="MenuTitle">
-                                            部门管理
-                                        </div>
-                                    </div>
-                                </div>
-                                </#if>
-                                <#if showRoleModule?? && showRoleModule == "YES">
-                                <div class="MenuItem" onclick="location.href='/system/role.html'">
-                                    <div class="MenuItem1" style="background-color:#2e8d95">
-                                        <div class="MenuContent">
-                                            <div class="MenuPic" style="background-image:url(${urls.getForLookupPath('/images/elec.png')})"></div>
-                                        </div>
-                                        <div class="MenuTitle">
-                                            角色管理
-                                        </div>
-                                    </div>
-                                </div>
-                                </#if>
-                                <#if showRoleResourceModule?? && showRoleResourceModule == "YES">
-                                <div class="MenuItem" onclick="location.href='/system/roleResource.html'">
-                                    <div class="MenuItem1" style="background-color:#2e8d95">
-                                        <div class="MenuContent">
-                                            <div class="MenuPic" style="background-image:url(${urls.getForLookupPath('/images/elec.png')})"></div>
-                                        </div>
-                                        <div class="MenuTitle">
-                                            权限管理
-                                        </div>
-                                    </div>
-                                </div>
-                                </#if>
-
-
-
-
-
-
-                                <div id="clear"></div>
-                            </div>
-
-                        </div>
-
-
-
-                        <div id="clear"></div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+<!---left S--->
+<!-- 左边可以放菜单栏,来显示菜单,可以用tree形式显示 -->
+<div region="west" split="true" title="功能选项" style="width: 120px;">
+    <div class="easyui-accordion"
+         data-options="border:false,fit:true" animate="false">
+        <!-- 可用c标签的foreach来读取后台的菜单树 -->
+    <#if moduleList?? && moduleList?size &gt; 0>
+        <#list moduleList as module>
+            <div title="&nbsp;&nbsp;&nbsp;&nbsp;${(module.name)!""}">
+                <!--ul的id可以设置成,这样就能出发点击事件或者别的事件 -->
+                <#if module.children?? && module.children?size &gt; 0>
+                    <#list module.children as resource>
+                        <ul style="text-align: center;" onclick="addTab(this.innerHTML,'${(resource.url)!""}')">${(resource.name)!""}</ul>
+                    </#list>
+                </#if>
+            </div>
+        </#list>
+    </#if>
 
     </div>
 </div>
+<!---left END--->
 
-<div class="contentBox contentReport">
-    <iframe id="reportFrm" src="" width="100%" height="100%" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes"></iframe>
-</div>
-<div class="contentBox contentModel">
-    <div class="ModelHeadBox">
-        <div class="webTitle"></div>
-        <div class="navBack">
-            <div class="backImg" onclick="goMain();"></div>
-            <div class="backTitle">返回首页</div>
-        </div>
-    </div>
-    <div style="position:absolute;top:60px;left:0px;right:0px;bottom:0px;">
-        <iframe id="modelFrm" src="" width="100%" height="100%" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes"></iframe>
-    </div>
-</div>
-<div class="contentBox contentShow">
-    <div class="navBox">
-        <div class="navBack">
-            <div class="backImg" onclick="goMain();"></div>
-            <div class="backTitle">返回首页</div>
-        </div>
+<!---center S--->
+<!-- 中间可以用来存放tabs,通过左边点击事件来填充tabs -->
+<div region="center"
+     style="padding: 5px; background: #eee;">
+    <div id="tts" class="easyui-tabs"
+         data-options="border:false,fit:true">
 
-
-    </div>
-
-    <div class="rightBodyBox">
-        <div class="contentHeadBox">
-            <div class="sysNav">
-                <ul id="mainTabNav" class="nav nav-tabs">
-                    <li role="presentation" id="tab_home" class="active"><a href="#tab_First" aria-controls="home" role="tab" data-toggle="tab"><i class="icon-home"></i>首页</a></li>
-                </ul>
-            </div>
-            <div class="sysLoginDept">
-                用户单位：鲁东南大区
-            </div>
-        </div>
-        <div id="mainTabContent" class="tab-content contentBodyBox ">
-
-        </div>
-
-    </div>
-    <div class="footBox">
+        <#--<div id="myCustomer" style="width: 100%;height: 50px;">-->
+            <#--<input id="q_responsiblePersonId" type="hidden"  name="q_responsiblePersonId" value="${responsiblePersonId}">-->
+            <#--<table id="dg">-->
+                <#--<thead>-->
+                <#--<tr>-->
+                    <#--<th data-options="field:'ck',checkbox:true,formatter : function(value, row, index) {return row.id;}"></th>-->
+                    <#--<th data-options="field:'customerName',width:150,halign:'center',align:'left'">客户名称</th>-->
+                    <#--<th data-options="field:'phone',width:100,halign:'center',align:'left'">电话</th>-->
+                    <#--<th data-options="field:'address',width:250,halign:'center',align:'left'">地址</th>-->
+                    <#--<th data-options="field:'manager',width:100,halign:'center',align:'left'">公司法人/总经理</th>-->
+                    <#--<th data-options="field:'responsiblePerson',width:100,halign:'center',align:'left'">业务人员</th>-->
+                    <#--<th data-options="field:'helpPerson',width:100,halign:'center',align:'left'">协助人</th>-->
+                <#--</tr>-->
+                <#--</thead>-->
+            <#--</table>-->
+        <#--</div>-->
 
     </div>
 </div>
+<!---center END--->
 
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" id="editModalDialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="editModalLabel">&nbsp;</h4>
-            </div>
-            <div class="modal-body" id="editModalBody">
-                <iframe id="editModelIfm" marginheight="0" marginwidth="0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="selModal" tabindex="-1" role="dialog" aria-labelledby="selModalLabel" aria-hidden="true">
-    <div class="modal-dialog" id="selModalDialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="selModalLabel">&nbsp;</h4>
-            </div>
-            <div class="modal-body" id="selModalBody">
-                <iframe id="selModelIfm" marginheight="0" marginwidth="0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="thirdModal" tabindex="-1" role="dialog" aria-labelledby="thirdModalLabel" aria-hidden="true">
-    <div class="modal-dialog" id="thirdModalDialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="thirdModalLabel">&nbsp;</h4>
-            </div>
-            <div class="modal-body" id="thirdModalBody">
-                <iframe id="thirdModelIfm" marginheight="0" marginwidth="0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="fourModal" tabindex="-1" role="dialog" aria-labelledby="fourModalLabel" aria-hidden="true">
-    <div class="modal-dialog" id="fourModalDialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="fourModalLabel">&nbsp;</h4>
-            </div>
-            <div class="modal-body" id="fourModalBody">
-                <iframe id="fourModelIfm" marginheight="0" marginwidth="0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script src="${urls.getForLookupPath('/js/bootstrap.min.js')}"></script>
 </body>
+<script type="text/javascript">
+    //官方demo
+    function addTab(title, url){
+        if ($('#tts').tabs('exists', title)){
+            $('#tts').tabs('select', title);
+        } else {
+            var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:100%;"></iframe>';
+            $('#tts').tabs('add',{
+                title:title,
+                content:content,
+                closable:true
+            });
+        }
+    }
+
+    //退出登录
+    function logoutCommit() {
+        $.ajax({
+            url:'/logoutCommit',
+            dataType : 'json',
+            type : 'POST',
+            async:false,
+            success: function (data){
+                window.location.href = "/login.html";
+            }
+        });
+    }
+
+//    $(function(){
+//        var q_responsiblePersonId = $("#q_responsiblePersonId").val();
+//        var datagrid = $('#dg').datagrid({
+//            title:'我的客户',
+//            toolbar:'#tb',
+//            singleSelect:true,
+//            fit:true,
+//            fitColumns:true,
+//            collapsible: true,
+//            rownumbers: true, //显示行数 1，2，3，4...
+//            pagination: true, //显示最下端的分页工具栏
+//            pagePosition : 'bottom',
+//            pageList: [5,10,15,20], //可以调整每页显示的数据，即调整pageSize每次向后台请求数据时的数据
+//            pageSize: 20, //读取分页条数，即向后台读取数据时传过去的值
+//            queryParams : {
+//                'q_responsiblePersonId' : q_responsiblePersonId
+//            },
+//            url:'/customer/customerList',
+//            nowrap : true,
+//            border : false
+//        });
+//    });
+
+</script>
 </html>

@@ -7,7 +7,7 @@ import com.platform.entity.system.DeviceUploadData;
 import java.util.Map;
 
 /**
- * Created by GaoJingFei on 2017/11/13.
+ * Created by GaoJingFei on 2020/07/25.
  */
 
 public interface DeviceUploadDataService {
