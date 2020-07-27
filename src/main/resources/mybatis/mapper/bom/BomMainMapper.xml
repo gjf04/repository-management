@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.dao.bom.BomMainDao">
+  <resultMap id="bomMainMap" type="BomMain">
+      <id column="id" property="id" />
+      <result column="customer_code" property="customerCode" />
+      <result column="pm_name" property="pmName" />
+      <result column="device_name" property="deviceName" />
+      <result column="me_name" property="meName" />
+      <result column="delivery_date" property="deliveryDate" />
+      <result column="production_date" property="productionDate" />
+      <result column="num" property="num" />
+      <result column="status" property="status" />
+      <result column="closed_at" property="closedAt" />
+      <result column="closed_by" property="closedBy" />
+      <result column="created_at" property="createdAt" />
+      <result column="updated_at" property="updatedAt" />
+      <result column="created_by" property="createdBy" />
+      <result column="updated_by" property="updatedBy" />
+      <result column="remark" property="remark" />
+      <result column="is_delete" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    customer_code, pm_name, device_name, me_name, delivery_date, production_date,
+    num, status, closed_at, closed_by,
+    created_at, updated_at, created_by, updated_by, remark, is_delete
+  </sql>
+  <sql id="table">bom_main</sql>
+
+    <select id="getBomMainList"  parameterType="Map"  resultMap="bomMainMap">
+        SELECT id, <include refid="Base_Column_List"/>
+        FROM <include refid="table"/>
+        <include refid="bomMainQuery"/>
+        Order By id DESC
+      LIMIT #{start},#{size}
+    </select>
+
+  <select id="getBomMainListCount"  parameterType="Map"  resultType="Integer">
+    SELECT COUNT(id)
+    FROM <include refid="table"/>
+    <include refid="bomMainQuery"/>
+  </select>
+
+    <sql id="bomMainQuery">
+        <where>
+            is_delete = 0
+            <if test="deviceName != null and deviceName != ''">
+                AND device_name = #{deviceName}
+            </if>
+            <if test="customerCode != null and customerCode != ''">
+                AND customer_code = #{customerCode}
+            </if>
+        </where>
+
+    </sql>
+
+  <select id="getById" parameterType="java.lang.Long" resultMap="bomMainMap">
+    select id, <include refid="Base_Column_List" />
+    from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 查询所有 -->
+  <select id="getAll" resultMap="bomMainMap">
+    SELECT id, <include refid="Base_Column_List"/>
+    FROM <include refid="table"/>
+    <include refid="bomMainQuery"/>
+    ORDER BY id DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from <include refid="table"/>
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+    <insert id="insert" parameterType="BomMain" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO <include refid="table"/>(<include refid="Base_Column_List"/>)
+        VALUES(
+        #{customerCode}, #{pmName}, #{deviceName}, #{meName}, #{deliveryDate}, #{productionDate},
+        #{num}, #{status}, #{closedAt}, #{closedBy},
+        now(), now(), #{createdBy}, #{updatedBy}, #{remark}, 0
+        )
+    </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="BomMain">
+    update <include refid="table"/>
+    <set>
+      <if test="status != null">
+          status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="closedAt != null">
+          closed_at = #{closedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="closedBy != null">
+          closed_by = #{closedBy,jdbcType=VARCHAR},
+      </if>
+
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  
+</mapper>

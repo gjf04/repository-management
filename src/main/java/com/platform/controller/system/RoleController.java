@@ -50,7 +50,7 @@ public class RoleController {
     public String index(HttpServletRequest request, Map<String, Object> dataMap) throws Exception {
         Long userId = (Long)(request.getSession().getAttribute(SessionSecurityConstants.KEY_USER_ID));
         if (null == userId) {
-            log.error("[DepartmentController][index] userId不存在,userId={}", userId);
+            log.error("[RoleController][index] userId不存在,userId={}", userId);
             return "redirect:/login.html";
         }
         Map<String, String> buttonsMap = resourceInfoService.getButtonCodeByUserId(userId);
