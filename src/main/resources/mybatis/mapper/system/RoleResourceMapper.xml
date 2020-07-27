@@ -13,12 +13,12 @@
     values (#{roleId,jdbcType=INTEGER}, #{resourceId,jdbcType=INTEGER})
   </insert>
   
-  <delete id="deleteByRoleId" parameterType="Integer" >
+  <delete id="deleteByRoleId" parameterType="java.lang.Long" >
   	delete from <include refid="table"/>
     where role_id = #{roleId,jdbcType=INTEGER}
   </delete>
   
-  <select id="selectAllByRoleId" parameterType="Integer" resultMap="roleResourceMap">
+  <select id="selectAllByRoleId" parameterType="java.lang.Long" resultMap="roleResourceMap">
   	select *  from <include refid="table"/>
     where role_id = #{roleId,jdbcType=INTEGER}
   </select>

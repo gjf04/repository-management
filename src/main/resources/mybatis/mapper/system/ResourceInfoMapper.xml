@@ -23,7 +23,7 @@
 
   <sql id="table">resource_info</sql>
 
-  <select id="getById" parameterType="java.lang.Integer" resultMap="resourceInfoMap">
+  <select id="getById" parameterType="java.lang.Long" resultMap="resourceInfoMap">
     select id, <include refid="Base_Column_List" />
     from <include refid="table"/>
     where id = #{id,jdbcType=INTEGER}
@@ -53,7 +53,7 @@
     </where>
   </sql>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from <include refid="table"/>
     where id = #{id,jdbcType=INTEGER}
   </delete>
