@@ -14,6 +14,10 @@ import java.util.Map;
 @Repository
 public class BomMainDao extends AbstractDao {
 
+    public BomMain getById(Long id){
+        return this.getSqlSession().selectOne(getNamespacePrefix() + "getById", id);
+    }
+
     public List<BomMain> getBomMainList(Map<String, Object> paramMap){
         return this.getSqlSession().selectList(getNamespacePrefix() + "getBomMainList", paramMap);
     }

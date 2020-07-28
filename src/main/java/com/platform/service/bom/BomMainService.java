@@ -18,7 +18,7 @@ public interface BomMainService {
     public ServiceResult<Integer> insert(BomMain bomMain);
 
     /**
-     * 获取系统中所有的角色
+     * 获取系统中所有
      * @return
      */
     public List<BomMain> getAll();

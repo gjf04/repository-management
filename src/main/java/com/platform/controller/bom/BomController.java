@@ -10,6 +10,7 @@ import com.platform.entity.bom.BomMain;
 
 import com.platform.service.bom.BomMainService;
 
+import com.platform.service.bom.BomSubService;
 import com.platform.service.system.ResourceInfoService;
 import com.platform.util.ButtonConstant;
 import com.platform.util.SessionSecurityConstants;
@@ -42,6 +43,8 @@ public class BomController {
     private ResourceInfoService resourceInfoService;
     @Resource
     private BomMainService bomMainService;
+    @Resource
+    private BomSubService bomSubService;
 
     @RequestMapping(value = "bomMain.html", method = { RequestMethod.GET, RequestMethod.POST })
     public String bomMain(HttpServletRequest request, Map<String, Object> dataMap) throws Exception {
@@ -101,6 +104,36 @@ public class BomController {
         } catch (IOException e) {
             log.error("BOM列表查询失败,error={}", e.getMessage());
             throw new BusinessException("BOM列表查询失败" + e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = { "bomSubList" })
+    public void bomSubList(HttpServletRequest request, HttpServletResponse response) {
+        Map <String, Object> criteria = Maps.newHashMap();
+        try {
+            String bomId = request.getParameter("bomId");
+            if(bomId != null && !"".equals(bomId)){
+                criteria.put("bomId", Long.parseLong(bomId));
+            }
+            Map<String, Object> dataMap = new HashMap<String, Object>();
+            PagerInfo pager = WebUtil.handlerPagerInfo(request, dataMap);
+            ServiceResult<Map<String, Object>> serviceResult = bomSubService.getBomSubList(criteria, pager);
+            if(serviceResult.getSuccess()){
+                Map<String, Object> map = serviceResult.getResult();
+                if(map!=null&&map.size()>0){
+                    List<BomMain> list = (List<BomMain>)map.get("data");
+                    int total = (Integer)map.get("total");
+                    dataMap.put("total", total);
+                    dataMap.put("rows", list);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write(JsonUtil.toJson(dataMap));
+                    response.getWriter().flush();
+                    response.getWriter().close();
+                }
+            }
+        } catch (IOException e) {
+            log.error("BOM零配件列表查询失败,error={}", e.getMessage());
+            throw new BusinessException("BOM零配件列表查询失败" + e.getMessage());
         }
     }
 

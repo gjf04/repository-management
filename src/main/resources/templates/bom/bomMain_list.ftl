@@ -65,6 +65,12 @@
     </div>
 </div>
 
+<!-- 双击弹出框-查看明细 -->
+<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1000px;height:630px"
+     data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
+    <table id="dataGridBomSub"></table>
+</div>
+
 <script type="text/javascript">
 var datagrid;
 var queryParameters;
@@ -187,10 +193,120 @@ $(function(){
                         }
                     }
                 ]
-            ]
+            ],
+            onDblClickRow : function(rowIndex,rowData){
+                showFormWin(rowIndex,rowData);
+            }
         });
     }
 });
+
+//双击看明细
+function showFormWin(rowIndex,rowData){
+    var selectedRow = $('#dataGrid').datagrid('getSelected');
+    var queryParametersBomSub = {
+        bomId:selectedRow.id
+    };
+    //console.log(selectedRow.id);
+    $("#showDetailWin").window("open");
+    $('#dataGridBomSub').datagrid({
+        title:'BOM零配件列表',
+        //toolbar:'#tb',
+        singleSelect:true,
+        fitColumns:true,
+        fit:true,
+        collapsible: true,
+        rownumbers: false, //显示行数 1，2，3，4...
+        pagination: true, //显示最下端的分页工具栏
+        pageList: [5,10,15,20], //可以调整每页显示的数据，即调整pageSize每次向后台请求数据时的数据
+        pageSize: 20, //读取分页条数，即向后台读取数据时传过去的值
+        url:'/bom/bomSubList',
+        queryParams:queryParametersBomSub,
+        columns: [
+            [
+                {
+                    field: 'serialNo',
+                    title: '序号',
+                    width: 60,
+                    align: 'center'
+                },
+                {
+                    field: 'name',
+                    title: '零配件名称',
+                    width: 180,
+                    align: 'center'
+                },
+                {
+                    field: 'brand',
+                    title: '材质/品牌',
+                    width: 120,
+                    align: 'center'
+                },
+                {
+                    field: 'specifications',
+                    title: '规格/尺寸',
+                    width: 300,
+                    align: 'center'
+                },
+                {
+                    field: 'unit',
+                    title: '单位',
+                    width: 80,
+                    align: 'center'
+                },
+                {
+                    field: 'singleAmount',
+                    title: '单台用量',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'totalAmount',
+                    title: '总用量',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'stockAmount',
+                    title: '库存',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'stockUpAmount',
+                    title: '备货',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'purchaseAmount',
+                    title: '申购',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'deliveryDate',
+                    title: '物料交期',
+                    width: 150,
+                    align: 'center',
+                },
+                {
+                    field: 'deliveryAmount',
+                    title: '已发数量',
+                    width: 100,
+                    align: 'center'
+                },
+                {
+                    field: 'remark',
+                    title: '备注',
+                    width: 150,
+                    align: 'center',
+                }
+            ]
+        ]
+
+    });
+}
 
 //角色新增
 $("#add").click(function(){

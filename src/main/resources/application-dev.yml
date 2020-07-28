@@ -34,4 +34,4 @@ jdbc:
   password: 3C735B2B0AFD4442922583FF75513E75
   driver-class-name: com.mysql.cj.jdbc.Driver
   hikari:
-    maxLifetime: 28770000
+    maxLifetime: 120000
