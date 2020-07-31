@@ -5,20 +5,27 @@ import com.gao.common.PagerInfo;
 import com.gao.common.ServiceResult;
 import com.gao.common.util.JsonUtil;
 
+import com.gao.common.util.StringUtil;
 import com.google.common.collect.Maps;
 import com.platform.entity.bom.BomMain;
 
+import com.platform.entity.bom.BomSub;
 import com.platform.service.bom.BomMainService;
 
 import com.platform.service.bom.BomSubService;
 import com.platform.service.system.ResourceInfoService;
-import com.platform.util.ButtonConstant;
-import com.platform.util.SessionSecurityConstants;
-import com.platform.util.WebUtil;
+import com.platform.util.*;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 
 import javax.annotation.Resource;
@@ -26,6 +33,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,6 +144,177 @@ public class BomController {
             log.error("BOM零配件列表查询失败,error={}", e.getMessage());
             throw new BusinessException("BOM零配件列表查询失败" + e.getMessage());
         }
+    }
+
+
+    /**
+     * BOM导入
+     */
+    @RequestMapping(value =  "importBomMain" )
+    @ResponseBody
+    public Object importCustomer(HttpServletRequest request,
+                               HttpServletResponse response) {
+        HttpJsonResult<Object> jsonResult = new HttpJsonResult<Object>();
+        // 转型为MultipartHttpRequest
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+        // 获得文件
+        MultipartFile file = multipartRequest.getFile("file");
+        if (file == null) {
+            log.error("没有选择导入文件，请选择导入文件后再点击导入操作！");
+            jsonResult.setMessage("没有选择导入文件，请选择导入文件后再点击导入操作！");
+            return jsonResult;
+        }
+
+        try {
+
+            List<String[]> list = this.readExcel(file.getInputStream(), 1);
+
+            //验证是否有数据
+            if (list.size() <= 1) {
+                jsonResult.setMessage("很抱歉！你导入的Excel没有数据记录，请重新整理导入！");
+                return jsonResult;
+            }
+
+            String nickName = (String)(request.getSession().getAttribute(SessionSecurityConstants.KEY_USER_NICK_NAME));
+
+            BomMain bomMain = new BomMain();
+            //客户编码 PM担当
+            String[] lineData3 = list.get(2);//表格第3行
+            bomMain.setCustomerCode(StringUtil.nullSafeString(lineData3[1]));
+            bomMain.setPmName(StringUtil.nullSafeString(lineData3[3]));
+            //机种名称 ME担当
+            String[] lineData4 = list.get(3);//表格第4行
+            bomMain.setDeviceName(StringUtil.nullSafeString(lineData4[1]));
+            bomMain.setMeName(StringUtil.nullSafeString(lineData4[3]));
+            //物料交期 制作日期
+            String[] lineData5 = list.get(4);//表格第5行
+            bomMain.setDeliveryDate(StringUtil.nullSafeString(lineData5[1]));
+            bomMain.setProductionDate(StringUtil.nullSafeString(lineData5[3]));
+            //总数量
+            String[] lineData6 = list.get(5);//表格第6行
+            String numStr = StringUtil.nullSafeString(lineData6[5]);
+            if("".equals(numStr) || !CommUtil.canToInt(numStr)){
+                numStr = "1";
+            }
+            bomMain.setNum(Integer.parseInt(numStr));
+            bomMain.setStatus(BomMain.StatusEnum.UNCLOSED.getStatus());
+            bomMain.setCreatedBy(nickName);
+            bomMain.setUpdatedBy(nickName);
+            ServiceResult<BomMain> insetBomMainResult = bomMainService.insert(bomMain);
+            if(!insetBomMainResult.getSuccess()){
+                jsonResult.setMessage("很抱歉！BOM导入时数据保存失败，请重新导入！");
+                return jsonResult;
+            }
+            bomMain.setId(insetBomMainResult.getResult().getId());
+
+            List<BomSub> bomSubList = new ArrayList<BomSub>();
+            for( int i=8 ; i < list.size() ; i++){
+                String[] str = list.get(i);
+                String serialNo = StringUtil.nullSafeString(str[0]);
+                if("".equals(serialNo) || str.length < 12){
+                    continue;
+                }
+                String name = StringUtil.nullSafeString(str[1]);
+                String brand = StringUtil.nullSafeString(str[2]);
+                String specifications = StringUtil.nullSafeString(str[3]);
+                String unit = StringUtil.nullSafeString(str[4]);
+                String singleAmount = StringUtil.nullSafeString(str[5]);
+                //String totalAmount = StringUtil.nullSafeString(str[6]);
+                String stockAmount = StringUtil.nullSafeString(str[7]);
+                String stockUpAmount = StringUtil.nullSafeString(str[8]);
+                String purchaseAmount = StringUtil.nullSafeString(str[9]);
+                String deliveryDate = StringUtil.nullSafeString(str[10]);
+                String remark = StringUtil.nullSafeString(str[11]);
+
+                if (StringUtil.isEmpty(name, true)) {
+                    //jsonResult.setMessage("很抱歉！你导入的Excel数据,第"+ (i+1) +"行数据 零配件名称不能为空! 请核查后重新导入！");
+                    continue;
+                }
+
+                BomSub bomSub = new BomSub();
+                bomSub.setBomId(bomMain.getId());
+                bomSub.setSerialNo(serialNo);
+                bomSub.setName(name);
+                bomSub.setBrand(brand);
+                bomSub.setSpecifications(specifications);
+                bomSub.setUnit(unit);
+                if(!"".equals(singleAmount) && CommUtil.canToInt(singleAmount)){
+                    bomSub.setSingleAmount(Integer.parseInt(singleAmount));
+                }else{
+                    bomSub.setSingleAmount(1);
+                }
+                bomSub.setTotalAmount(bomSub.getSingleAmount() * bomMain.getNum());
+                if(!"".equals(stockAmount) && CommUtil.canToInt(stockAmount)){
+                    bomSub.setStockAmount(Integer.parseInt(stockAmount));
+                }
+                if(!"".equals(stockUpAmount) && CommUtil.canToInt(stockUpAmount)){
+                    bomSub.setStockUpAmount(Integer.parseInt(stockUpAmount));
+                }
+                if(!"".equals(purchaseAmount) && CommUtil.canToInt(purchaseAmount)){
+                    bomSub.setPurchaseAmount(Integer.parseInt(purchaseAmount));
+                }
+                bomSub.setDeliveryDate(deliveryDate);
+                bomSub.setCreatedBy(nickName);
+                bomSub.setUpdatedBy(nickName);
+                bomSub.setRemark(remark);
+                bomSubList.add(bomSub);
+
+            }
+            if(bomSubList.size() > 0){
+                ServiceResult<Integer> batchInsertResult = bomSubService.batchInsert(bomSubList);
+                if(!batchInsertResult.getSuccess()){
+                    log.error("导入失败");
+                    jsonResult.setMessage(batchInsertResult.getMessage());
+                    return jsonResult;
+                }
+            }
+            jsonResult.setData(true);
+            return jsonResult;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            log.error("导入失败", e);
+            jsonResult.setMessage(e.getMessage());
+            return jsonResult;
+        }
+
+    }
+
+    /**
+     *
+     * @param stream 读取文件对象
+     * @param rowNum 从第几行开始读，如果有一行表头则从第二行开始读
+     */
+    private List<String[]> readExcel(InputStream stream, int rowNum) throws BiffException,
+            IOException {
+        // 创建一个list 用来存储读取的内容
+        List<String[]> list = new ArrayList<String[]>();
+        Workbook rwb = null;
+        Cell cell = null;
+        // 创建输入流
+        //        InputStream stream = new FileInputStream(excelFile);
+        // 获取Excel文件对象
+        rwb = Workbook.getWorkbook(stream);
+        // 获取文件的指定工作表 默认的第一个
+        Sheet sheet = rwb.getSheet(0);
+        // 行数(表头的目录不需要，从1开始)
+        for (int i = rowNum - 1; i < sheet.getRows(); i++) {
+            // 创建一个数组 用来存储每一列的值
+            String[] str = new String[sheet.getColumns()];
+            // 列数
+            for (int j = 0; j < sheet.getColumns(); j++) {
+                // 获取第i行，第j列的值
+                cell = sheet.getCell(j, i);
+                str[j] = cell.getContents();
+            }
+            // 把刚获取的列存入list
+            list.add(str);
+        }
+        rwb.close();
+        stream.close();
+        // 返回值集合
+        return list;
     }
 
 }  

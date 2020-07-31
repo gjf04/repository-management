@@ -52,7 +52,13 @@ public class BomSubServiceImpl implements BomSubService {
     public ServiceResult<Integer> insert(BomSub bomSub) {
         ServiceResult<Integer> result = new ServiceResult<Integer>();
         result.setResult(bomSubDao.insert(bomSub));
+        return result;
+    }
 
+    @Override
+    public ServiceResult<Integer> batchInsert(List<BomSub> bomSubList) {
+        ServiceResult<Integer> result = new ServiceResult<Integer>();
+        result.setResult(bomSubDao.batchInsert(bomSubList));
         return result;
     }
 

@@ -83,6 +83,19 @@
         )
     </insert>
 
+    <insert id="batchInsert"  parameterType="ArrayList">
+        INSERT INTO <include refid="table"/>
+        ( <include refid="Base_Column_List" /> )
+        VALUES
+        <foreach collection="list" item="obj" index="index" separator="," >
+            (
+            #{obj.bomId}, #{obj.serialNo}, #{obj.name}, #{obj.brand}, #{obj.specifications},#{obj.unit}, #{obj.singleAmount}, #{obj.totalAmount},
+            #{obj.stockAmount}, #{obj.stockUpAmount}, #{obj.purchaseAmount}, #{obj.deliveryDate}, #{obj.deliveryAmount},
+            now(), now(), #{obj.createdBy}, #{obj.updatedBy}, #{obj.remark}, 0
+            )
+        </foreach>
+    </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="BomSub">
     update <include refid="table"/>
     <set>

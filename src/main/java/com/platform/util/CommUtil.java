@@ -203,7 +203,6 @@ public class CommUtil {
     /**
      * 根据日期计算属于第几周
      * @param date 格式 yyyy-MM-dd
-     * @throws ParseException
      * return 返回0表示异常，或日期为空
      */
     public static int getWeekOfYear(String date, String pattern) {
@@ -291,7 +290,7 @@ public class CommUtil {
     /**
      * 字符串转码utf-8
      * @param str
-     * @param charset
+     * @param str
      * @return
      * @throws UnsupportedEncodingException
      */
@@ -317,7 +316,7 @@ public class CommUtil {
 
     /**
      * 格式化某个日期字符串为指定格式的日期字符串，如yyyy-mm-dd到yyyy年mm月dd日
-     * @param date
+     * @param datestr
      * @param parseStyle
      * @return 格式化后的日期字符串
      */
@@ -397,7 +396,6 @@ public class CommUtil {
     /**
      * 根据日期计算属于第几周(周四是一周的第一天)
      * @param date 格式 yyyy-MM-dd dispflg:0 返回yyyyww;1 返回yyyy年ww周
-     * @throws ParseException
      * return 返回空表示异常，或日期为空
      */
     public static String getWeekOfYear_Sunday(String date, String pattern, String dispflg) {
@@ -435,7 +433,6 @@ public class CommUtil {
     /**
      * 根据日期计算属于第几周(周日是一周的第一天)
      * @param date 格式 yyyy-MM-dd dispflg:0 返回yyyyww;1 返回yyyy年ww周
-     * @throws ParseException
      * return 返回空表示异常，或日期为空
      */
     public static String getWeekOfYear_Sunday_Normal(String date, String pattern, String dispflg) {
@@ -663,7 +660,7 @@ public class CommUtil {
     /**
      * 把Integer类型的参数转换为String类型
      * 如果为null则转化为空串
-     * @param Integer类型初始数据
+     * @param intValue
      * @return String类型返回结果
      */
     public static String getStringValue(Integer intValue) {
@@ -700,7 +697,6 @@ public class CommUtil {
     /**
      * 根据日期计算属于第几月
      * @param date 格式 yyyy-MM-dd dispflg:0 返回yyyyww;1 返回yyyy年ww月
-     * @throws ParseException
      * return 返回空表示异常，或日期为空
      */
     public static String getMonthOfDate(String date, String pattern, String dispflg) {

@@ -15,7 +15,7 @@ public interface BomMainService {
 
     public ServiceResult<Map<String, Object>> getBomMainList(Map<String, Object> paramMap, PagerInfo pagerInfo);
 
-    public ServiceResult<Integer> insert(BomMain bomMain);
+    public ServiceResult<BomMain> insert(BomMain bomMain);
 
     /**
      * 获取系统中所有

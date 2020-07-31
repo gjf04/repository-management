@@ -45,30 +45,31 @@
     </div>
 </div>
 
-<div id="roleInputInfo" style="padding:10px;display:none;" title="新增角色">
-    <table>
-        <tr>
-            <td>角色编码</td>
-            <td><input id="code_edit" type="text"/></td>
-        </tr>
-        <tr>
-            <td>角色名称</td>
-            <td><input id="name_edit" type="text"/></td>
-        </tr>
-        <tr>
-            <td>角色描述</td>
-            <td><input id="description_edit" type="text"/></td>
-        </tr>
-    </table>
-    </br>
-    <div style="text-align:center"><input id="saveBtn" type="button" value="保存" class="l-btn" style=" font-size: 12px;line-height: 24px; width: 52px; font-family: 微软雅黑"/>
-    </div>
-</div>
-
 <!-- 双击弹出框-查看明细 -->
 <div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1000px;height:630px"
      data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
     <table id="dataGridBomSub"></table>
+</div>
+
+<!-- 导入窗口 -->
+<div id="importDialog" class="easyui-window" title="导入BOM（目前只支持xls格式，请另存为xls后导入）"  style="width:460px;height:120px"
+     data-options="closed:true,iconCls:'icon-excel',modal:true,collapsible:false,minimizable:false,maximizable:false">
+    <form onsubmit="return false;" id="importForm" enctype="multipart/form-data" method="post"
+          action="/bom/importBomMain">
+        <table class="fixedTb">
+            <tr>
+                <td class="formlabletd">文件:</td>
+                <td width="200px;">
+                    <input id="importFile" type="file"  name="file" onchange="checkExt(this.id, 'xls',this.value)" style="width:200px">
+                    <input id="importFileName" type="hidden"  name="fileName" >
+                </td>
+                <td style="width:100px;padding-left: 20px;padding-right: 20px;">
+                    <a href="#" class="easyui-linkbutton"  data-options="iconCls:'icon-excel'" onclick="importRow();">导入</a>
+                </td>
+            </tr>
+
+        </table>
+    </form>
 </div>
 
 <script type="text/javascript">
@@ -308,57 +309,9 @@ function showFormWin(rowIndex,rowData){
     });
 }
 
-//角色新增
+//新增
 $("#add").click(function(){
-    $("#name_edit").val("");
-    $("#description_edit").val("");
-
-    $("#roleInputInfo").show();
-    $("#roleInputInfo").dialog({
-        collapsible: true,
-        minimizable: false,
-        maximizable: false,
-        height:200,
-        width:300
-    });
-});
-
-//角色新增提交
-$("#saveBtn").click(function(){
-    if(!$.isNotBlank($("#code_edit").val())){
-        $.messager.alert("提示","请填写角色编码","info")
-        return false;
-    }
-    if(!$.isNotBlank($("#name_edit").val())){
-        $.messager.alert("提示","请填写角色名称","info")
-        return false;
-    }
-    if(!$.isNotBlank($("#description_edit").val())){
-        $.messager.alert("提示","请填写角色描述","info")
-        return false;
-    }
-    $.messager.progress({text:"提交中..."});
-    jQuery.ajax({
-        url: "/system/saveRole",
-        data:{
-            "code": $("#code_edit").val(),
-            "name": $("#name_edit").val(),
-            "description": $("#description_edit").val()
-        },
-        type: "POST",
-        success: function(result) {
-            $.messager.progress('close');
-            if(result.success == true){
-                $('#dataGrid').datagrid('reload');
-                $("#roleInputInfo").dialog("close");
-            }else
-                $.messager.alert('错误', result.message, 'error');
-        },
-        fail: function(data) {
-            $.messager.progress('close');
-            $.messager.alert('错误',"保存信息出错,请联系管理员！");
-        }
-    });
+    openImportWin();
 });
 
 //角色修改
@@ -370,6 +323,64 @@ $("#update").click(function(){
 $("#delete").click(function(){
 
 });
+
+//打开导入窗口
+function openImportWin(){
+    $('#importForm').form("clear");
+    $("#importDialog").window("open");
+}
+//检查导入文件种类
+function checkExt(fileId, ext, val) {
+    var result = true;
+    var tempext = ext;
+    ext = ',' + ext + ','; // ,xls,xlxs,
+    var value = $("#" + fileId).val(); // 111.xlxs
+    if (value == "")
+        return false;
+    if (value.indexOf(".") > 0) {
+        var o = value.split("."); // 111.xlxs ==> o[111] o[xlxs]
+        var e = ',' + o[o.length - 1].toLowerCase() + ','; // ,xlxs,
+        if (ext.indexOf(e) == -1) // ext中不包含e
+            result = false;
+    } else{
+        result = false;
+    }
+    if (!result) {
+        $.messager.alert('提示', '请选择Excel文件！', 'warning');
+        document.getElementById(fileId).outerHTML = document
+                .getElementById(fileId).outerHTML.replace(/(value=\").+\"/i,
+                "$1\"");
+    } else {
+        $('#importFileName').val(val);
+    }
+}
+//上传文件
+function importRow(){
+    $('#importForm').form('submit',{
+        onSubmit : function(param) {
+            if($("#importFile").val()==""){
+                $.messager.alert('提示','请选择要上传的Excel！','warning');
+                return false;
+            }
+            $.messager.progress({
+                text : '正在上传，请稍后...',
+                interval : 100
+            });
+            return true;
+        },
+        success : function(result) {
+            var data = eval('(' + result + ')');
+            $.messager.progress('close');
+            if(!data.success){
+                $.messager.alert('提示',data.message,'warning');
+            }else{
+                $.messager.alert('提示','BOM导入成功');
+                $("#importDialog").window("close");
+                loaddata();
+            }
+        }
+    });
+}
 
 </script>
 </body>

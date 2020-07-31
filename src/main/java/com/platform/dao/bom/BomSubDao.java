@@ -35,4 +35,8 @@ public class BomSubDao extends AbstractDao {
         return this.getSqlSession().insert(getNamespacePrefix() + "insert", bomSub);
     }
 
+    public Integer batchInsert(List<BomSub> bomSubList){
+        return this.getSqlSession().insert(getNamespacePrefix() + "batchInsert", bomSubList);
+    }
+
 }

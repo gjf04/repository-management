@@ -49,10 +49,11 @@ public class BomMainServiceImpl implements BomMainService {
     }
 
     @Override
-    public ServiceResult<Integer> insert(BomMain bomMain) {
-        ServiceResult<Integer> result = new ServiceResult<Integer>();
-        result.setResult(bomMainDao.insert(bomMain));
-
+    public ServiceResult<BomMain> insert(BomMain bomMain) {
+        ServiceResult<BomMain> result = new ServiceResult<BomMain>();
+        Integer count = bomMainDao.insert(bomMain);
+        result.setSuccess(count == 1);
+        result.setResult(bomMain);
         return result;
     }
 

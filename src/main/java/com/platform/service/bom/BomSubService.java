@@ -17,4 +17,6 @@ public interface BomSubService {
 
     public ServiceResult<Integer> insert(BomSub bomSub);
 
+    public ServiceResult<Integer> batchInsert(List<BomSub> bomSubList);
+
 }
