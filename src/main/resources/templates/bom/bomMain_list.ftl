@@ -37,7 +37,7 @@
             <a id="add" href="#" class="easyui-linkbutton" iconCls="icon-add"  plain="false" >新增</a>
         </#if>
         <#if showEditButton?? && showEditButton == "YES">
-            <a id="update" href="#" class="easyui-linkbutton" iconCls="icon-edit"  plain="false"  >修改</a>
+            <a id="update" href="#" class="easyui-linkbutton" iconCls="icon-edit"  plain="false"  >结案</a>
         </#if>
         <#if showRemoveButton?? && showRemoveButton == "YES">
             <a id="delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="false">删除</a>
@@ -314,14 +314,76 @@ $("#add").click(function(){
     openImportWin();
 });
 
-//角色修改
+//结案
 $("#update").click(function(){
+    var selectedRow = $('#dataGrid').datagrid('getSelected');
+    if(!selectedRow){
+        $.messager.alert('提示','请选择操作行。');
+        return;
+    }
+    if(selectedRow.status == 1){
+        $.messager.alert('提示','该BOM已经结案，无需重复操作！');
+        return;
+    }
+    $.messager.confirm('提示', '确定结案吗？', function(r){
+        if (r){
+            $.messager.progress({text:"提交中..."});
+            $.ajax({
+                type:"POST",
+                url: "/bom/closeBom",
+                dataType: "json",
+                data: "id=" + selectedRow.id,
+                cache:false,
+                success:function(data){
+                    $.messager.progress('close');
+                    if (data.success) {
+                        $('#dataGrid').datagrid('reload');
+                    } else {
+                        $.messager.alert('提示',data.message);
+                        $('#dataGrid').datagrid('reload');
+                        $.messager.alert('提示',"操作成功");
+                    }
 
+                }
+            });
+        }
+    });
 });
 
-//角色删除
+//删除
 $("#delete").click(function(){
+    var selectedRow = $('#dataGrid').datagrid('getSelected');
+    if(!selectedRow){
+        $.messager.alert('提示','请选择操作行。');
+        return;
+    }
+    if(selectedRow.status == 1){
+        $.messager.alert('提示','该BOM已经结案，不可删除！');
+        return;
+    }
+    $.messager.confirm('提示', '确定删除该BOM吗？', function(r){
+        if (r){
+            $.messager.progress({text:"提交中..."});
+            $.ajax({
+                type:"POST",
+                url: "/bom/deleteBom",
+                dataType: "json",
+                data: "id=" + selectedRow.id,
+                cache:false,
+                success:function(data){
+                    $.messager.progress('close');
+                    if (data.success) {
+                        $('#dataGrid').datagrid('reload');
+                    } else {
+                        $.messager.alert('提示',data.message);
+                        $('#dataGrid').datagrid('reload');
+                        $.messager.alert('提示',"操作成功");
+                    }
 
+                }
+            });
+        }
+    });
 });
 
 //打开导入窗口

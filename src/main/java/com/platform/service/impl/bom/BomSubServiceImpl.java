@@ -3,6 +3,7 @@ package com.platform.service.impl.bom;
 import com.gao.common.PagerInfo;
 import com.gao.common.ServiceResult;
 import com.platform.dao.bom.BomSubDao;
+import com.platform.entity.bom.BomMain;
 import com.platform.entity.bom.BomSub;
 import com.platform.service.bom.BomSubService;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,27 @@ public class BomSubServiceImpl implements BomSubService {
         ServiceResult<Integer> result = new ServiceResult<Integer>();
         result.setResult(bomSubDao.batchInsert(bomSubList));
         return result;
+    }
+
+    @Override
+    public ServiceResult<Boolean> updateBomSub(BomSub bomSub) {
+        ServiceResult<Boolean> executeResult = new ServiceResult<Boolean>();
+        BomSub dbBomSub = bomSubDao.getById(bomSub.getId());
+        if(dbBomSub == null){
+            executeResult.setError("", "该BOM不存在或已经被删除。");
+            executeResult.setResult(false);
+            return executeResult;
+        }
+        Integer count = bomSubDao.update(bomSub);
+        executeResult.setResult(count == 1);
+        return executeResult;
+    }
+
+    @Override
+    public ServiceResult<Integer> deleteByBomId(Long bomId) {
+        ServiceResult<Integer> executeResult = new ServiceResult<Integer>();
+        executeResult.setResult(bomSubDao.deleteByBomId(bomId));
+        return executeResult;
     }
 
 }

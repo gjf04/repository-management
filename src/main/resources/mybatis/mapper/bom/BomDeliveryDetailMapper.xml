@@ -82,11 +82,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="BomDeliveryDetail">
     update <include refid="table"/>
     <set>
-
-      <if test="updatedAt != null">
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-
       <if test="updatedBy != null">
         updated_by = #{updatedBy,jdbcType=VARCHAR},
       </if>
@@ -96,6 +91,7 @@
       <if test="isDelete != null">
         is_delete = #{isDelete,jdbcType=INTEGER},
       </if>
+        updated_at = now()
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>

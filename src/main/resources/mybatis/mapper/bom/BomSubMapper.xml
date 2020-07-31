@@ -34,7 +34,7 @@
         SELECT id, <include refid="Base_Column_List"/>
         FROM <include refid="table"/>
         <include refid="bomSubQuery"/>
-        Order By id
+        ORDER BY id
       LIMIT #{start},#{size}
     </select>
 
@@ -58,20 +58,20 @@
     </sql>
 
   <select id="getById" parameterType="java.lang.Long" resultMap="bomSubMap">
-    select id, <include refid="Base_Column_List" />
-    from <include refid="table"/>
-    where id = #{id,jdbcType=INTEGER}
+    SELECT id, <include refid="Base_Column_List" />
+    FROM <include refid="table"/>
+    WHERE id = #{id,jdbcType=INTEGER}
   </select>
 
     <select id="getByBomId" parameterType="java.lang.Long" resultMap="bomSubMap">
-        select id, <include refid="Base_Column_List" />
-        from <include refid="table"/>
-        where bom_id = #{bomId,jdbcType=INTEGER}
+        SELECT id, <include refid="Base_Column_List" />
+        FROM <include refid="table"/>
+        WHERE bom_id = #{bomId,jdbcType=INTEGER}
     </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from <include refid="table"/>
-    where id = #{id,jdbcType=INTEGER}
+    DELETE FROM <include refid="table"/>
+    WHERE id = #{id,jdbcType=INTEGER}
   </delete>
 
     <insert id="insert" parameterType="BomSub" useGeneratedKeys="true" keyProperty="id">
@@ -97,7 +97,7 @@
     </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="BomSub">
-    update <include refid="table"/>
+    UPDATE <include refid="table"/>
     <set>
         <if test="name != null">
             name = #{name,jdbcType=VARCHAR},
@@ -133,22 +133,25 @@
             delivery_amount = #{deliveryAmount,jdbcType=INTEGER},
         </if>
 
-      <if test="updatedAt != null">
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-
-      <if test="updatedBy != null">
-        updated_by = #{updatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=INTEGER},
-      </if>
+        <if test="updatedBy != null">
+            updated_by = #{updatedBy,jdbcType=VARCHAR},
+        </if>
+        <if test="remark != null">
+            remark = #{remark,jdbcType=VARCHAR},
+        </if>
+        <if test="isDelete != null">
+            is_delete = #{isDelete,jdbcType=INTEGER},
+        </if>
+        updated_at = now()
     </set>
-    where id = #{id,jdbcType=INTEGER}
+      WHERE id = #{id,jdbcType=INTEGER}
   </update>
+
+    <update id="deleteByBomId" parameterType="java.lang.Long">
+        UPDATE <include refid="table"/>
+        SET is_delete = 1, updated_at = now()
+        WHERE bom_id = #{bomId,jdbcType=INTEGER}
+    </update>
 
   
 </mapper>

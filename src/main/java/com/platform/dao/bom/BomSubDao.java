@@ -4,6 +4,7 @@ package com.platform.dao.bom;
 import com.platform.dao.AbstractDao;
 import com.platform.entity.bom.BomMain;
 import com.platform.entity.bom.BomSub;
+import com.platform.entity.system.UserInfo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,8 +20,8 @@ public class BomSubDao extends AbstractDao {
         return this.getSqlSession().selectOne(getNamespacePrefix() + "getById", id);
     }
 
-    public BomSub getByBomId(Long bomId){
-        return this.getSqlSession().selectOne(getNamespacePrefix() + "getByBomId", bomId);
+    public List<BomSub> getByBomId(Long bomId){
+        return this.getSqlSession().selectList(getNamespacePrefix() + "getByBomId", bomId);
     }
 
     public List<BomSub> getBomSubList(Map<String, Object> paramMap){
@@ -37,6 +38,16 @@ public class BomSubDao extends AbstractDao {
 
     public Integer batchInsert(List<BomSub> bomSubList){
         return this.getSqlSession().insert(getNamespacePrefix() + "batchInsert", bomSubList);
+    }
+
+    //更新
+    public Integer update(BomSub bomSub){
+        return this.getSqlSession().update(getNamespacePrefix()+"updateByPrimaryKeySelective", bomSub);
+    }
+
+    //根据bomId删除
+    public Integer deleteByBomId(Long bomId){
+        return this.getSqlSession().update(getNamespacePrefix()+"deleteByBomId", bomId);
     }
 
 }

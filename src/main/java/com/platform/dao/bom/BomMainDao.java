@@ -3,6 +3,7 @@ package com.platform.dao.bom;
 
 import com.platform.dao.AbstractDao;
 import com.platform.entity.bom.BomMain;
+import com.platform.entity.bom.BomSub;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,6 +37,11 @@ public class BomMainDao extends AbstractDao {
      */
     public List<BomMain> getAll(){
         return this.getSqlSession().selectList(getNamespacePrefix()+"getAll");
+    }
+
+    //更新
+    public Integer update(BomMain bomMain){
+        return this.getSqlSession().update(getNamespacePrefix()+"updateByPrimaryKeySelective", bomMain);
     }
 
 }

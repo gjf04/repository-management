@@ -7,9 +7,14 @@ import com.gao.common.util.JsonUtil;
 
 import com.gao.common.util.StringUtil;
 import com.google.common.collect.Maps;
+import com.platform.controller.AbstractController;
+import com.platform.entity.BaseEntity;
 import com.platform.entity.bom.BomMain;
 
 import com.platform.entity.bom.BomSub;
+import com.platform.entity.system.UserDepartment;
+import com.platform.entity.system.UserInfo;
+import com.platform.entity.system.UserRole;
 import com.platform.service.bom.BomMainService;
 
 import com.platform.service.bom.BomSubService;
@@ -34,10 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -47,7 +49,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/bom")
 @Slf4j
-public class BomController {
+public class BomController extends AbstractController {
     @Resource
     private ResourceInfoService resourceInfoService;
     @Resource
@@ -57,7 +59,7 @@ public class BomController {
 
     @RequestMapping(value = "bomMain.html", method = { RequestMethod.GET, RequestMethod.POST })
     public String bomMain(HttpServletRequest request, Map<String, Object> dataMap) throws Exception {
-        Long userId = (Long)(request.getSession().getAttribute(SessionSecurityConstants.KEY_USER_ID));
+        Long userId = getCurrentUserId(request);
         if (null == userId) {
             log.error("[BomController][bomMain] userId不存在,userId={}", userId);
             return "redirect:/login.html";
@@ -66,13 +68,13 @@ public class BomController {
         String showAddButton = "NO";
         String showEditButton = "NO";
         String showRemoveButton = "NO";
-        if(buttonsMap.containsKey(ButtonConstant.ROLE_ADD_CODE)){
+        if(buttonsMap.containsKey(ButtonConstant.BOM_ADD_CODE)){
             showAddButton = "YES";
         }
-        if(buttonsMap.containsKey(ButtonConstant.ROLE_EDIT_CODE)){
+        if(buttonsMap.containsKey(ButtonConstant.BOM_EDIT_CODE)){
             showEditButton = "YES";
         }
-        if(buttonsMap.containsKey(ButtonConstant.ROLE_REMOVE_CODE)){
+        if(buttonsMap.containsKey(ButtonConstant.BOM_REMOVE_CODE)){
             showRemoveButton = "YES";
         }
 
@@ -176,7 +178,7 @@ public class BomController {
                 return jsonResult;
             }
 
-            String nickName = (String)(request.getSession().getAttribute(SessionSecurityConstants.KEY_USER_NICK_NAME));
+            String nickName = getCurrentUserNickName(request);
 
             BomMain bomMain = new BomMain();
             //客户编码 PM担当
@@ -315,6 +317,84 @@ public class BomController {
         stream.close();
         // 返回值集合
         return list;
+    }
+
+    /**
+     * 结案
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/closeBom", method = RequestMethod.POST)
+    @ResponseBody
+    public Object closeBom(HttpServletRequest request) {
+        HttpJsonResult<Object> jsonResult = new HttpJsonResult<Object>();
+        String id = request.getParameter("id");
+        BomMain dbBomMain = bomMainService.getById(Long.parseLong(id));
+        if (dbBomMain == null) {
+            log.error("[BomController][closeBom]BOM不存在，结案失败！bomId={}", id);
+            jsonResult.setMessage("BOM不存在，结案失败！");
+            return jsonResult;
+        }
+        if (BomMain.StatusEnum.CLOSED.getStatus().equals(dbBomMain.getStatus())) {
+            log.error("[BomController][closeBom]该BOM已结案，操作失败！bomId={}", id);
+            jsonResult.setMessage("该BOM已结案，操作失败！");
+            return jsonResult;
+        }
+        String nickName = getCurrentUserNickName(request);
+        BomMain bomMain = new BomMain();
+        bomMain.setId(dbBomMain.getId());
+        bomMain.setStatus(BomMain.StatusEnum.CLOSED.getStatus());
+        bomMain.setClosedAt(new Date());
+        bomMain.setClosedBy(nickName);
+        bomMain.setUpdatedBy(nickName);
+        ServiceResult<Boolean> result = bomMainService.updateBomMain(bomMain);
+        if (!result.getSuccess()) {
+            log.error("[BomController][closeBom]结案失败！bomId={}", id);
+            jsonResult.setMessage("结案失败！");
+            return jsonResult;
+        }
+        jsonResult.setData(result.getSuccess());
+        return jsonResult;
+    }
+
+    /**
+     * 删除
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/deleteBom", method = RequestMethod.POST)
+    @ResponseBody
+    public Object deleteBom(HttpServletRequest request) {
+        HttpJsonResult<Object> jsonResult = new HttpJsonResult<Object>();
+        String id = request.getParameter("id");
+        BomMain dbBomMain = bomMainService.getById(Long.parseLong(id));
+        if (dbBomMain == null) {
+            log.error("[BomController][deleteBom]BOM不存在，操作失败！bomId={}", id);
+            jsonResult.setMessage("BOM不存在，操作失败！");
+            return jsonResult;
+        }
+        if (BomMain.StatusEnum.CLOSED.getStatus().equals(dbBomMain.getStatus())) {
+            log.error("[BomController][deleteBom]该BOM已结案，操作失败！bomId={}", id);
+            jsonResult.setMessage("该BOM已结案，操作失败！");
+            return jsonResult;
+        }
+        String nickName = getCurrentUserNickName(request);
+        BomMain bomMain = new BomMain();
+        bomMain.setId(dbBomMain.getId());
+        bomMain.setIsDelete(BomMain.IsDeleteEnum.YES.getIsDelete());
+        bomMain.setUpdatedBy(nickName);
+        ServiceResult<Boolean> result = bomMainService.updateBomMain(bomMain);
+        if (!result.getSuccess()) {
+            log.error("[BomController][deleteBom]操作失败！bomId={}", id);
+            jsonResult.setMessage("操作失败！");
+            return jsonResult;
+        }
+        ServiceResult<Integer> subResult = bomSubService.deleteByBomId(dbBomMain.getId());
+        if (!subResult.getSuccess()) {
+            log.error("[BomController][deleteBom]更新bomSub.isDelete失败！bomId={}", id);
+        }
+        jsonResult.setData(result.getSuccess());
+        return jsonResult;
     }
 
 }  

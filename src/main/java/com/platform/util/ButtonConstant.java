@@ -31,5 +31,12 @@ public class ButtonConstant {
     //用户管理-审核通过
     public static final String USER_ADUIT_CODE= "100101104104";
 
+    //BOM管理-新增
+    public static final String BOM_ADD_CODE= "100103101102";
+    //BOM管理-结案
+    public static final String BOM_EDIT_CODE= "100103101103";
+    //BOM管理-删除
+    public static final String BOM_REMOVE_CODE= "100103101104";
+
 
 }

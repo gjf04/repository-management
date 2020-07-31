@@ -4,11 +4,13 @@ import com.gao.common.PagerInfo;
 import com.gao.common.ServiceResult;
 import com.platform.dao.bom.BomMainDao;
 import com.platform.entity.bom.BomMain;
+import com.platform.entity.system.UserInfo;
 import com.platform.service.bom.BomMainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,11 @@ import java.util.Map;
 public class BomMainServiceImpl implements BomMainService {
     @Autowired
     private BomMainDao bomMainDao;
+
+    @Override
+    public BomMain getById(Long id){
+        return bomMainDao.getById(id);
+    }
 
     @Override
     public ServiceResult<Map<String, Object>> getBomMainList(Map<String, Object> paramMap, PagerInfo pagerInfo) {
@@ -60,6 +67,20 @@ public class BomMainServiceImpl implements BomMainService {
     @Override
     public List<BomMain> getAll() {
         return bomMainDao.getAll();
+    }
+
+    @Override
+    public ServiceResult<Boolean> updateBomMain(BomMain bomMain) {
+        ServiceResult<Boolean> executeResult = new ServiceResult<Boolean>();
+        BomMain dbBomMain = bomMainDao.getById(bomMain.getId());
+        if(dbBomMain == null){
+            executeResult.setError("", "该BOM不存在或已经被删除。");
+            executeResult.setResult(false);
+            return executeResult;
+        }
+        Integer count = bomMainDao.update(bomMain);
+        executeResult.setResult(count == 1);
+        return executeResult;
     }
 
 }
