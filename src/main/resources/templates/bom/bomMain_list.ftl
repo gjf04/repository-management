@@ -20,6 +20,13 @@
                     <td class="cxinput">
                         <input id="customerCode" name="customerCode" class="easyui-textbox" style="width:100px;">
                     </td>
+                    <td class="cxlabel">创建时间:</td>
+                    <td class="cxinput">
+                        <input type="text" id="createdAtStart" name="createdAtStart" class="Wdate {required:true}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:100px;"/>
+                    </td>
+                    <td class="cxinput">
+                        -&nbsp;<input type="text" id="createdAtEnd" name="createdAtEnd" class="Wdate {required:true}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:100px;"/>
+                    </td>
                     <td class="cxlabel">
                         <a href="#"  id = "searchPt"  class="easyui-linkbutton" iconCls="icon-search" onclick="loaddata()">查询</a>
                     </td>
@@ -92,7 +99,9 @@ $.isNotBlank = function(value) {
 $(function(){
     queryParameters = {
         deviceName:$("#deviceName").val(),
-        customerCode:$("#customerCode").val()
+        customerCode:$("#customerCode").val(),
+        createdAtStart:$("#createdAtStart").val(),
+        createdAtEnd:$("#createdAtEnd").val()
     };
     if(datagrid){
         //grid加载

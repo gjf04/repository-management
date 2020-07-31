@@ -96,6 +96,14 @@ public class BomController extends AbstractController {
             if(customerCode != null && !"".equals(customerCode)){
                 criteria.put("customerCode", customerCode);
             }
+            String createdAtStart = request.getParameter("createdAtStart");
+            if(createdAtStart != null && !"".equals(createdAtStart)){
+                criteria.put("createdAtStart", CommUtil.getStringToDate(createdAtStart + " 00:00:00", "yyyy-MM-dd HH:mm:ss"));
+            }
+            String createdAtEnd = request.getParameter("createdAtEnd");
+            if(createdAtEnd != null && !"".equals(createdAtEnd)){
+                criteria.put("createdAtEnd", CommUtil.getStringToDate(createdAtEnd + " 23:59:59", "yyyy-MM-dd HH:mm:ss"));
+            }
             Map<String, Object> dataMap = new HashMap<String, Object>();
             PagerInfo pager = WebUtil.handlerPagerInfo(request, dataMap);
             ServiceResult<Map<String, Object>> serviceResult = bomMainService.getBomMainList(criteria, pager);

@@ -50,6 +50,12 @@
             <if test="customerCode != null and customerCode != ''">
                 AND customer_code = #{customerCode}
             </if>
+            <if test="createdAtStart != null">
+                <![CDATA[ AND created_at >=  #{createdAtStart} ]]>
+            </if>
+            <if test="createdAtEnd != null">
+                <![CDATA[ AND created_at <=  #{createdAtEnd} ]]>
+            </if>
         </where>
 
     </sql>
