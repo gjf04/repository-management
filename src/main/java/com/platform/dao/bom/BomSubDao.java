@@ -50,4 +50,9 @@ public class BomSubDao extends AbstractDao {
         return this.getSqlSession().update(getNamespacePrefix()+"deleteByBomId", bomId);
     }
 
+    //更新已发货数量
+    public Integer updateDeliveryAmount(BomSub bomSub){
+        return this.getSqlSession().update(getNamespacePrefix()+"updateDeliveryAmount", bomSub);
+    }
+
 }

@@ -30,7 +30,7 @@
         SELECT id, <include refid="Base_Column_List"/>
         FROM <include refid="table"/>
         <include refid="bomDeliveryDetailQuery"/>
-        Order By id DESC
+        Order By id ASC
       LIMIT #{start},#{size}
     </select>
 
@@ -48,6 +48,12 @@
             </if>
             <if test="serialNo != null and serialNo != ''">
                 AND serial_no = #{serialNo}
+            </if>
+            <if test="deliveryDateStart != null">
+                <![CDATA[ AND delivery_date >=  #{deliveryDateStart} ]]>
+            </if>
+            <if test="deliveryDateEnd != null">
+                <![CDATA[ AND delivery_date <=  #{deliveryDateEnd} ]]>
             </if>
         </where>
 
@@ -77,6 +83,19 @@
         #{deliveryBy},
         now(), now(), #{createdBy}, #{updatedBy}, #{remark}, 0
         )
+    </insert>
+
+    <insert id="batchInsert"  parameterType="ArrayList">
+        INSERT INTO <include refid="table"/>
+        ( <include refid="Base_Column_List" /> )
+        VALUES
+        <foreach collection="list" item="obj" index="index" separator="," >
+            (
+            #{obj.bomId}, #{obj.serialNo}, #{obj.name}, #{obj.brand}, #{obj.specifications}, #{obj.unit}, #{obj.deliveryDate}, #{obj.deliveryAmount},
+            #{obj.deliveryBy},
+            now(), now(), #{obj.createdBy}, #{obj.updatedBy}, #{obj.remark}, 0
+            )
+        </foreach>
     </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="BomDeliveryDetail">

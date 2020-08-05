@@ -84,4 +84,18 @@ public class BomSubServiceImpl implements BomSubService {
         return executeResult;
     }
 
+    @Override
+    public ServiceResult<Boolean> updateDeliveryAmount(BomSub bomSub) {
+        ServiceResult<Boolean> executeResult = new ServiceResult<Boolean>();
+        BomSub dbBomSub = bomSubDao.getById(bomSub.getId());
+        if(dbBomSub == null){
+            executeResult.setError("", "该BOM不存在或已经被删除。");
+            executeResult.setResult(false);
+            return executeResult;
+        }
+        Integer count = bomSubDao.updateDeliveryAmount(bomSub);
+        executeResult.setResult(count == 1);
+        return executeResult;
+    }
+
 }

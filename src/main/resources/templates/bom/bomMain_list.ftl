@@ -49,13 +49,51 @@
         <#if showRemoveButton?? && showRemoveButton == "YES">
             <a id="delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="false">删除</a>
         </#if>
+            <a href="#"  id = "searchBomDeliveryDetail"  class="easyui-linkbutton" iconCls="icon-search" onclick="showBomDeliveryDetail()">发货明细</a>
     </div>
 </div>
 
 <!-- 双击弹出框-查看明细 -->
-<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1000px;height:630px"
+<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1200px;height:630px"
      data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
     <table id="dataGridBomSub"></table>
+    <input name="bomStatus" id="bomStatus" type="hidden"/>
+</div>
+
+<div id="showDetailWinTb" >
+<#if showAddButton?? && showAddButton == "YES">
+    <a id="saveDeliveryAmount" href="#" class="easyui-linkbutton" iconCls="icon-add"  plain="false" >提交</a>
+</#if>
+</div>
+
+<!-- 查看发货明细 -->
+<div id="showDeliveryDetailWin" class="easyui-window" title="查看发货明细" style="width:1200px;height:680px"
+     data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
+    <div data-options="region:'north',title:'查询条件',border:false" style="height: 40px;" class="zoc">
+        <form onsubmit="return false;" id="searchDeliveryDetailForm">
+            <input name="bomId" id="bomId" type="hidden"/>
+            <table class="fixedTb">
+                <tr>
+                    <td class="cxlabel">发货时间:</td>
+                    <td class="cxinput">
+                        <input type="text" id="deliveryDateStart" name="deliveryDateStart" class="Wdate {required:true}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:100px;"/>
+                    </td>
+                    <td class="cxinput">
+                        -&nbsp;<input type="text" id="deliveryDateEnd" name="deliveryDateEnd" class="Wdate {required:true}" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" style="width:100px;"/>
+                    </td>
+                    <td class="cxlabel">
+                        <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="loadBomDeliveryDetail()">查询</a>
+                    </td>
+
+                </tr>
+            </table>
+
+        </form>
+    </div>
+    <div region="center" border="false" style="height: 600px;">
+        <table id="dataGridDeliveryDetail"></table>
+    </div>
+
 </div>
 
 <!-- 导入窗口 -->
@@ -85,6 +123,10 @@ var queryParameters;
 
 function loaddata(){
     $('#dataGrid').datagrid('load',sy.serializeObject($("#searchForm").form()));
+}
+
+function loadBomDeliveryDetail(){
+    $('#dataGridDeliveryDetail').datagrid('load',sy.serializeObject($("#searchDeliveryDetailForm").form()));
 }
 
 // 判断是否为空
@@ -214,14 +256,14 @@ $(function(){
 //双击看明细
 function showFormWin(rowIndex,rowData){
     var selectedRow = $('#dataGrid').datagrid('getSelected');
+    $('#bomStatus').val(selectedRow.status);
     var queryParametersBomSub = {
         bomId:selectedRow.id
     };
-    //console.log(selectedRow.id);
     $("#showDetailWin").window("open");
     $('#dataGridBomSub').datagrid({
         title:'BOM零配件列表',
-        //toolbar:'#tb',
+        toolbar:'#showDetailWinTb',
         singleSelect:true,
         fitColumns:true,
         fit:true,
@@ -230,6 +272,10 @@ function showFormWin(rowIndex,rowData){
         pagination: true, //显示最下端的分页工具栏
         pageList: [5,10,15,20], //可以调整每页显示的数据，即调整pageSize每次向后台请求数据时的数据
         pageSize: 20, //读取分页条数，即向后台读取数据时传过去的值
+        onClickCell: function(index,field,value){
+            $(this).datagrid('beginEdit', index);
+            var ed = $(this).datagrid('getEditor', {index:index,field:field});
+        },
         url:'/bom/bomSubList',
         queryParams:queryParametersBomSub,
         columns: [
@@ -307,20 +353,69 @@ function showFormWin(rowIndex,rowData){
                     align: 'center'
                 },
                 {
+                    field: 'currentDeliveryAmount',
+                    title: '本次发货数量',
+                    width: 150,
+                    align: 'center',
+                    editor: {type:'numberbox',options:{precision:0}}
+                },
+                {
                     field: 'remark',
                     title: '备注',
                     width: 150,
                     align: 'center',
                 }
+
             ]
         ]
 
     });
 }
 
+
 //新增
 $("#add").click(function(){
     openImportWin();
+});
+
+//提交保存发货数量
+$("#saveDeliveryAmount").click(function(){
+    var bomStatus = $("#bomStatus").val();
+    console.log(bomStatus);
+    if(bomStatus == 1){
+        $.messager.alert('提示','该BOM已结案！');
+        return false;
+    }
+    $.messager.confirm('提示', '确定提交吗？', function(r){
+        if (r){
+            $.messager.progress({text:"提交中..."});
+            var rows = $("#dataGridBomSub").datagrid("getRows");
+            for(var i=0;i<rows.length;i++)
+            {
+                $('#dataGridBomSub').datagrid('endEdit', i);
+            }
+            var jsonDataStr = JSON.stringify(rows);
+            //console.log(jsonDataStr);
+            $.ajax({
+                type:"POST",
+                url: "/bom/commitDeliveryAmount",
+                dataType: "json",
+                data: "jsonDataStr=" + jsonDataStr,
+                cache:false,
+                success:function(data){
+                    $.messager.progress('close');
+                    if (data.success) {
+                        $("#showDetailWin").window("close");
+                        $('#dataGrid').datagrid('reload');
+                    } else {
+                        $.messager.alert('提示',data.message);
+                    }
+
+                }
+            });
+        }
+    });
+
 });
 
 //结案
@@ -350,7 +445,6 @@ $("#update").click(function(){
                     } else {
                         $.messager.alert('提示',data.message);
                         $('#dataGrid').datagrid('reload');
-                        $.messager.alert('提示',"操作成功");
                     }
 
                 }
@@ -386,7 +480,6 @@ $("#delete").click(function(){
                     } else {
                         $.messager.alert('提示',data.message);
                         $('#dataGrid').datagrid('reload');
-                        $.messager.alert('提示',"操作成功");
                     }
 
                 }
@@ -450,6 +543,83 @@ function importRow(){
                 loaddata();
             }
         }
+    });
+}
+
+//看发货明细
+var queryParametersBomDeliveryDetail = {
+    bomId:$("#bomId").val(),
+    deliveryDateStart:$("#deliveryDateStart").val(),
+    deliveryDateEnd:$("#deliveryDateEnd").val()
+};
+function showBomDeliveryDetail(){
+    var selectedRow = $('#dataGrid').datagrid('getSelected');
+    if(!selectedRow){
+        $.messager.alert('提示','请选择要查看的BOM行。');
+        return;
+    }
+    $('#bomId').val(selectedRow.id);
+    $("#showDeliveryDetailWin").window("open");
+    $('#dataGridDeliveryDetail').datagrid({
+        title:'BOM发货明细列表',
+        singleSelect:true,
+        fitColumns:true,
+        fit:true,
+        collapsible: true,
+        rownumbers: false, //显示行数 1，2，3，4...
+        pagination: true, //显示最下端的分页工具栏
+        pageList: [5,10,15,20], //可以调整每页显示的数据，即调整pageSize每次向后台请求数据时的数据
+        pageSize: 20, //读取分页条数，即向后台读取数据时传过去的值
+        url:'/bom/bomDeliveryDetailList',
+        queryParams:queryParametersBomDeliveryDetail,
+        columns: [
+            [
+                {
+                    field: 'serialNo',
+                    title: '序号',
+                    width: 60,
+                    align: 'center'
+                },
+                {
+                    field: 'name',
+                    title: '零配件名称',
+                    width: 180,
+                    align: 'center'
+                },
+                {
+                    field: 'brand',
+                    title: '材质/品牌',
+                    width: 120,
+                    align: 'center'
+                },
+                {
+                    field: 'specifications',
+                    title: '规格/尺寸',
+                    width: 300,
+                    align: 'center'
+                },
+                {
+                    field: 'unit',
+                    title: '单位',
+                    width: 80,
+                    align: 'center'
+                },
+                {
+                    field: 'deliveryDate',
+                    title: '发货时间',
+                    width: 150,
+                    align: 'center',
+                },
+                {
+                    field: 'deliveryAmount',
+                    title: '发货数量',
+                    width: 100,
+                    align: 'center'
+                }
+
+            ]
+        ]
+
     });
 }
 

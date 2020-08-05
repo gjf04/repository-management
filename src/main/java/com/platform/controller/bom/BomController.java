@@ -1,5 +1,6 @@
 package com.platform.controller.bom;
 
+import com.alibaba.fastjson.JSONArray;
 import com.gao.common.BusinessException;
 import com.gao.common.PagerInfo;
 import com.gao.common.ServiceResult;
@@ -9,12 +10,14 @@ import com.gao.common.util.StringUtil;
 import com.google.common.collect.Maps;
 import com.platform.controller.AbstractController;
 import com.platform.entity.BaseEntity;
+import com.platform.entity.bom.BomDeliveryDetail;
 import com.platform.entity.bom.BomMain;
 
 import com.platform.entity.bom.BomSub;
 import com.platform.entity.system.UserDepartment;
 import com.platform.entity.system.UserInfo;
 import com.platform.entity.system.UserRole;
+import com.platform.service.bom.BomDeliveryDetailService;
 import com.platform.service.bom.BomMainService;
 
 import com.platform.service.bom.BomSubService;
@@ -56,6 +59,8 @@ public class BomController extends AbstractController {
     private BomMainService bomMainService;
     @Resource
     private BomSubService bomSubService;
+    @Resource
+    private BomDeliveryDetailService bomDeliveryDetailService;
 
     @RequestMapping(value = "bomMain.html", method = { RequestMethod.GET, RequestMethod.POST })
     public String bomMain(HttpServletRequest request, Map<String, Object> dataMap) throws Exception {
@@ -140,7 +145,7 @@ public class BomController extends AbstractController {
             if(serviceResult.getSuccess()){
                 Map<String, Object> map = serviceResult.getResult();
                 if(map!=null&&map.size()>0){
-                    List<BomMain> list = (List<BomMain>)map.get("data");
+                    List<BomSub> list = (List<BomSub>)map.get("data");
                     int total = (Integer)map.get("total");
                     dataMap.put("total", total);
                     dataMap.put("rows", list);
@@ -265,6 +270,7 @@ public class BomController extends AbstractController {
                     bomSub.setPurchaseAmount(Integer.parseInt(purchaseAmount));
                 }
                 bomSub.setDeliveryDate(deliveryDate);
+                bomSub.setDeliveryAmount(0);
                 bomSub.setCreatedBy(nickName);
                 bomSub.setUpdatedBy(nickName);
                 bomSub.setRemark(remark);
@@ -403,6 +409,88 @@ public class BomController extends AbstractController {
         }
         jsonResult.setData(result.getSuccess());
         return jsonResult;
+    }
+
+    /**
+     * 提交保存发货数量
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/commitDeliveryAmount", method = RequestMethod.POST)
+    @ResponseBody
+    public Object commitDeliveryAmount(HttpServletRequest request) {
+        HttpJsonResult<Object> jsonResult = new HttpJsonResult<Object>();
+        List<BomDeliveryDetail> bomDeliveryDetailList = new ArrayList<BomDeliveryDetail>();
+        String nickName = getCurrentUserNickName(request);
+        String jsonDataStr = request.getParameter("jsonDataStr");
+        List<BomSub> list = JSONArray.parseArray(jsonDataStr, BomSub.class);
+        for(int i = 0; i < list.size(); i++){
+            BomDeliveryDetail bomDeliveryDetail = new BomDeliveryDetail();
+            bomDeliveryDetail.setBomId(list.get(i).getBomId());
+            bomDeliveryDetail.setSerialNo(list.get(i).getSerialNo());
+            bomDeliveryDetail.setName(list.get(i).getName());
+            bomDeliveryDetail.setBrand(list.get(i).getBrand());
+            bomDeliveryDetail.setSpecifications(list.get(i).getSpecifications());
+            bomDeliveryDetail.setUnit(list.get(i).getUnit());
+            bomDeliveryDetail.setDeliveryDate(new Date());
+            bomDeliveryDetail.setDeliveryAmount(list.get(i).getCurrentDeliveryAmount());
+            bomDeliveryDetail.setDeliveryBy(nickName);
+            bomDeliveryDetail.setCreatedBy(nickName);
+            bomDeliveryDetail.setUpdatedBy(nickName);
+            bomDeliveryDetailList.add(bomDeliveryDetail);
+        }
+        if(bomDeliveryDetailList.size() > 0){
+            ServiceResult<Integer> batchInsertResult = bomDeliveryDetailService.batchInsert(bomDeliveryDetailList);
+            if(!batchInsertResult.getSuccess()){
+                log.error("[BomController][commitDeliveryAmount]提交保存发货数量失败,error={}", batchInsertResult.getMessage());
+                jsonResult.setMessage(batchInsertResult.getMessage());
+                return jsonResult;
+            }
+        }
+        //更新BomSub的已发货数量
+        for(int i = 0; i < list.size(); i++){
+            bomSubService.updateDeliveryAmount(list.get(i));
+        }
+        jsonResult.setData(true);
+        return jsonResult;
+    }
+
+    @RequestMapping(value = { "bomDeliveryDetailList" })
+    public void bomDeliveryDetailList(HttpServletRequest request, HttpServletResponse response) {
+        Map <String, Object> criteria = Maps.newHashMap();
+        try {
+            String bomId = request.getParameter("bomId");
+            if(bomId != null && !"".equals(bomId)){
+                criteria.put("bomId", Long.parseLong(bomId));
+            }
+            String deliveryDateStart = request.getParameter("deliveryDateStart");
+            if(deliveryDateStart != null && !"".equals(deliveryDateStart)){
+                criteria.put("deliveryDateStart", CommUtil.getStringToDate(deliveryDateStart + " 00:00:00", "yyyy-MM-dd HH:mm:ss"));
+            }
+            String deliveryDateEnd = request.getParameter("deliveryDateEnd");
+            if(deliveryDateEnd != null && !"".equals(deliveryDateEnd)){
+                criteria.put("deliveryDateEnd", CommUtil.getStringToDate(deliveryDateEnd + " 23:59:59", "yyyy-MM-dd HH:mm:ss"));
+            }
+            Map<String, Object> dataMap = new HashMap<String, Object>();
+            PagerInfo pager = WebUtil.handlerPagerInfo(request, dataMap);
+            ServiceResult<Map<String, Object>> serviceResult = bomDeliveryDetailService.getBomDeliveryDetailList(criteria, pager);
+            if(serviceResult.getSuccess()){
+                Map<String, Object> map = serviceResult.getResult();
+                if(map!=null&&map.size()>0){
+                    List<BomDeliveryDetail> list = (List<BomDeliveryDetail>)map.get("data");
+                    int total = (Integer)map.get("total");
+                    dataMap.put("total", total);
+                    dataMap.put("rows", list);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write(JsonUtil.toJson(dataMap));
+                    response.getWriter().flush();
+                    response.getWriter().close();
+                }
+            }
+        } catch (IOException e) {
+            log.error("[BomController][bomDeliveryDetailList]BOM发货明细列表查询失败,error={}", e.getMessage());
+            throw new BusinessException("BOM发货明细列表查询失败" + e.getMessage());
+        }
     }
 
 }  

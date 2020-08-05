@@ -16,6 +16,7 @@
       <result column="purchase_amount" property="purchaseAmount" />
       <result column="delivery_date" property="deliveryDate" />
       <result column="delivery_amount" property="deliveryAmount" />
+      <result column="current_delivery_amount" property="currentDeliveryAmount" />
       <result column="created_at" property="createdAt" />
       <result column="updated_at" property="updatedAt" />
       <result column="created_by" property="createdBy" />
@@ -31,7 +32,8 @@
   <sql id="table">bom_sub</sql>
 
     <select id="getBomSubList"  parameterType="Map"  resultMap="bomSubMap">
-        SELECT id, <include refid="Base_Column_List"/>
+        SELECT id, <include refid="Base_Column_List"/>,
+        total_amount-ifnull(delivery_amount, 0) as current_delivery_amount
         FROM <include refid="table"/>
         <include refid="bomSubQuery"/>
         ORDER BY id
@@ -153,5 +155,15 @@
         WHERE bom_id = #{bomId,jdbcType=INTEGER}
     </update>
 
+    <update id="updateDeliveryAmount" parameterType="BomSub">
+        UPDATE <include refid="table"/>
+        <set>
+            <if test="currentDeliveryAmount != null">
+                delivery_amount = ifnull(delivery_amount, 0) + #{currentDeliveryAmount,jdbcType=INTEGER},
+            </if>
+            updated_at = now()
+        </set>
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
   
 </mapper>

@@ -4,6 +4,7 @@ import com.gao.common.PagerInfo;
 import com.gao.common.ServiceResult;
 import com.platform.dao.bom.BomDeliveryDetailDao;
 import com.platform.entity.bom.BomDeliveryDetail;
+import com.platform.entity.bom.BomSub;
 import com.platform.service.bom.BomDeliveryDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,13 @@ public class BomDeliveryDetailServiceImpl implements BomDeliveryDetailService {
         ServiceResult<Integer> result = new ServiceResult<Integer>();
         result.setResult(bomDeliveryDetailDao.insert(bomDeliveryDetail));
 
+        return result;
+    }
+
+    @Override
+    public ServiceResult<Integer> batchInsert(List<BomDeliveryDetail> bomDeliveryDetailList) {
+        ServiceResult<Integer> result = new ServiceResult<Integer>();
+        result.setResult(bomDeliveryDetailDao.batchInsert(bomDeliveryDetailList));
         return result;
     }
 

@@ -32,4 +32,10 @@ public interface BomSubService {
      */
     public ServiceResult<Integer> deleteByBomId(Long bomId);
 
+    /**
+     * 更新已发货数量
+     * @param bomSub
+     */
+    public ServiceResult<Boolean> updateDeliveryAmount(BomSub bomSub);
+
 }

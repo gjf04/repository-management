@@ -20,7 +20,7 @@ public class BomDeliveryDetail extends BaseEntity{
      */
     private static final long serialVersionUID = -1647851620613858307L;
 
-    private Integer bomId;
+    private Long bomId;
 
     private String serialNo;
 

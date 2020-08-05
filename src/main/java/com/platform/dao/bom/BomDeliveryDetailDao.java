@@ -3,6 +3,7 @@ package com.platform.dao.bom;
 
 import com.platform.dao.AbstractDao;
 import com.platform.entity.bom.BomDeliveryDetail;
+import com.platform.entity.bom.BomSub;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,6 +33,10 @@ public class BomDeliveryDetailDao extends AbstractDao {
 
     public Integer insert(BomDeliveryDetail bomDeliveryDetail){
         return this.getSqlSession().insert(getNamespacePrefix() + "insert", bomDeliveryDetail);
+    }
+
+    public Integer batchInsert(List<BomDeliveryDetail> bomDeliveryDetailList){
+        return this.getSqlSession().insert(getNamespacePrefix() + "batchInsert", bomDeliveryDetailList);
     }
 
 }

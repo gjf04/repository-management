@@ -46,4 +46,6 @@ public class BomSub extends BaseEntity{
 
     private Integer deliveryAmount;
 
+    private Integer currentDeliveryAmount;
+
 }
