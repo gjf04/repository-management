@@ -547,11 +547,6 @@ function importRow(){
 }
 
 //看发货明细
-var queryParametersBomDeliveryDetail = {
-    bomId:$("#bomId").val(),
-    deliveryDateStart:$("#deliveryDateStart").val(),
-    deliveryDateEnd:$("#deliveryDateEnd").val()
-};
 function showBomDeliveryDetail(){
     var selectedRow = $('#dataGrid').datagrid('getSelected');
     if(!selectedRow){
@@ -560,6 +555,11 @@ function showBomDeliveryDetail(){
     }
     $('#bomId').val(selectedRow.id);
     $("#showDeliveryDetailWin").window("open");
+    var queryParametersBomDeliveryDetail = {
+        bomId:$("#bomId").val(),
+        deliveryDateStart:$("#deliveryDateStart").val(),
+        deliveryDateEnd:$("#deliveryDateEnd").val()
+    };
     $('#dataGridDeliveryDetail').datagrid({
         title:'BOM发货明细列表',
         singleSelect:true,
