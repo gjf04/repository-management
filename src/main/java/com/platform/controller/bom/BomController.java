@@ -421,12 +421,16 @@ public class BomController extends AbstractController {
     public Object commitDeliveryAmount(HttpServletRequest request) {
         HttpJsonResult<Object> jsonResult = new HttpJsonResult<Object>();
         List<BomDeliveryDetail> bomDeliveryDetailList = new ArrayList<BomDeliveryDetail>();
+        Long bomId = null;
         String nickName = getCurrentUserNickName(request);
         String jsonDataStr = request.getParameter("jsonDataStr");
         List<BomSub> list = JSONArray.parseArray(jsonDataStr, BomSub.class);
         for(int i = 0; i < list.size(); i++){
             BomDeliveryDetail bomDeliveryDetail = new BomDeliveryDetail();
-            bomDeliveryDetail.setBomId(list.get(i).getBomId());
+            if(i == 0){
+                bomId = list.get(i).getBomId();
+            }
+            bomDeliveryDetail.setBomId(bomId);
             bomDeliveryDetail.setSerialNo(list.get(i).getSerialNo());
             bomDeliveryDetail.setName(list.get(i).getName());
             bomDeliveryDetail.setBrand(list.get(i).getBrand());
@@ -447,9 +451,23 @@ public class BomController extends AbstractController {
                 return jsonResult;
             }
         }
+        BomMain bomMain = null;
+        if(bomId != null){
+            bomMain = bomMainService.getById(bomId);
+        }
+        if(bomMain == null){
+            log.error("[BomController][commitDeliveryAmount]提交保存发货数量失败,BOM主数据为空!bomId={}", bomId);
+            jsonResult.setMessage("提交保存发货数量失败,BOM主数据为空");
+            return jsonResult;
+        }
         //更新BomSub的已发货数量
         for(int i = 0; i < list.size(); i++){
-            bomSubService.updateDeliveryAmount(list.get(i));
+            BomSub bomSub = new BomSub();
+            bomSub.setId(list.get(i).getId());
+            bomSub.setSingleAmount(list.get(i).getSingleAmount());
+            bomSub.setTotalAmount(bomSub.getSingleAmount() * bomMain.getNum());
+            bomSub.setCurrentDeliveryAmount(list.get(i).getCurrentDeliveryAmount());
+            bomSubService.updateDeliveryAmount(bomSub);
         }
         jsonResult.setData(true);
         return jsonResult;

@@ -25,6 +25,11 @@ public class BomSubServiceImpl implements BomSubService {
     private BomSubDao bomSubDao;
 
     @Override
+    public List<BomSub> getByBomId(Long bomId){
+        return bomSubDao.getByBomId(bomId);
+    }
+
+    @Override
     public ServiceResult<Map<String, Object>> getBomSubList(Map<String, Object> paramMap, PagerInfo pagerInfo) {
         ServiceResult<Map<String, Object>> result = new ServiceResult<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -81,6 +86,13 @@ public class BomSubServiceImpl implements BomSubService {
     public ServiceResult<Integer> deleteByBomId(Long bomId) {
         ServiceResult<Integer> executeResult = new ServiceResult<Integer>();
         executeResult.setResult(bomSubDao.deleteByBomId(bomId));
+        return executeResult;
+    }
+
+    @Override
+    public ServiceResult<Integer> deleteById(Long id) {
+        ServiceResult<Integer> executeResult = new ServiceResult<Integer>();
+        executeResult.setResult(bomSubDao.deleteById(id));
         return executeResult;
     }
 

@@ -14,6 +14,8 @@ import java.util.Map;
 
 public interface BomSubService {
 
+    public List<BomSub> getByBomId(Long bomId);
+
     public ServiceResult<Map<String, Object>> getBomSubList(Map<String, Object> paramMap, PagerInfo pagerInfo);
 
     public ServiceResult<Integer> insert(BomSub bomSub);
@@ -31,6 +33,12 @@ public interface BomSubService {
      * @param bomId
      */
     public ServiceResult<Integer> deleteByBomId(Long bomId);
+
+    /**
+     * 根据Id删除
+     * @param id
+     */
+    public ServiceResult<Integer> deleteById(Long id);
 
     /**
      * 更新已发货数量

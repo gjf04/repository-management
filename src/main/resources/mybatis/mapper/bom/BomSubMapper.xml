@@ -155,9 +155,21 @@
         WHERE bom_id = #{bomId,jdbcType=INTEGER}
     </update>
 
+    <update id="deleteById" parameterType="java.lang.Long">
+        UPDATE <include refid="table"/>
+        SET is_delete = 1, updated_at = now()
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+
     <update id="updateDeliveryAmount" parameterType="BomSub">
         UPDATE <include refid="table"/>
         <set>
+            <if test="singleAmount != null">
+                single_amount = #{singleAmount,jdbcType=INTEGER},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount,jdbcType=INTEGER},
+            </if>
             <if test="currentDeliveryAmount != null">
                 delivery_amount = ifnull(delivery_amount, 0) + #{currentDeliveryAmount,jdbcType=INTEGER},
             </if>

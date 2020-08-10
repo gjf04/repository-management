@@ -54,7 +54,7 @@
 </div>
 
 <!-- 双击弹出框-查看明细 -->
-<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1200px;height:630px"
+<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1200px;height:660px"
      data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
     <table id="dataGridBomSub"></table>
     <input name="bomStatus" id="bomStatus" type="hidden"/>
@@ -314,7 +314,8 @@ function showFormWin(rowIndex,rowData){
                     field: 'singleAmount',
                     title: '单台用量',
                     width: 100,
-                    align: 'center'
+                    align: 'center',
+                    editor: {type:'numberbox',options:{precision:0}}
                 },
                 {
                     field: 'totalAmount',
@@ -344,7 +345,7 @@ function showFormWin(rowIndex,rowData){
                     field: 'deliveryDate',
                     title: '物料交期',
                     width: 150,
-                    align: 'center',
+                    align: 'center'
                 },
                 {
                     field: 'deliveryAmount',
@@ -363,7 +364,7 @@ function showFormWin(rowIndex,rowData){
                     field: 'remark',
                     title: '备注',
                     width: 150,
-                    align: 'center',
+                    align: 'center'
                 }
 
             ]
@@ -608,7 +609,7 @@ function showBomDeliveryDetail(){
                     field: 'deliveryDate',
                     title: '发货时间',
                     width: 150,
-                    align: 'center',
+                    align: 'center'
                 },
                 {
                     field: 'deliveryAmount',
