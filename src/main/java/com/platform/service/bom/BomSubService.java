@@ -14,6 +14,8 @@ import java.util.Map;
 
 public interface BomSubService {
 
+    public BomSub getById(Long id);
+
     public List<BomSub> getByBomId(Long bomId);
 
     public ServiceResult<Map<String, Object>> getBomSubList(Map<String, Object> paramMap, PagerInfo pagerInfo);

@@ -25,6 +25,11 @@ public class BomSubServiceImpl implements BomSubService {
     private BomSubDao bomSubDao;
 
     @Override
+    public BomSub getById(Long id){
+        return bomSubDao.getById(id);
+    }
+
+    @Override
     public List<BomSub> getByBomId(Long bomId){
         return bomSubDao.getByBomId(bomId);
     }

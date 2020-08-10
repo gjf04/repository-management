@@ -63,6 +63,8 @@
 <div id="showDetailWinTb" >
 <#if showAddButton?? && showAddButton == "YES">
     <a id="saveDeliveryAmount" href="#" class="easyui-linkbutton" iconCls="icon-add"  plain="false" >提交</a>
+    <a id="addDetailLine" href="#" class="easyui-linkbutton" iconCls="icon-add"  plain="false" >新增行</a>
+    <a id="deleteDetailLine" href="#" class="easyui-linkbutton" iconCls="icon-remove"  plain="false" >删除行</a>
 </#if>
 </div>
 
@@ -417,6 +419,37 @@ $("#saveDeliveryAmount").click(function(){
         }
     });
 
+});
+
+//BOM零配件列表-删除行
+$("#deleteDetailLine").click(function(){
+    var selectedRow = $('#dataGridBomSub').datagrid('getSelected');
+    if(!selectedRow){
+        $.messager.alert('提示','请选择操作行。');
+        return;
+    }
+    $.messager.confirm('提示', '确定删除该行数据吗？', function(r){
+        if (r){
+            $.messager.progress({text:"提交中..."});
+            $.ajax({
+                type:"POST",
+                url: "/bom/deleteBomSub",
+                dataType: "json",
+                data: "id=" + selectedRow.id,
+                cache:false,
+                success:function(data){
+                    $.messager.progress('close');
+                    if (data.success) {
+                        $('#dataGridBomSub').datagrid('reload');
+                    } else {
+                        $.messager.alert('提示',data.message);
+                        $('#dataGridBomSub').datagrid('reload');
+                    }
+
+                }
+            });
+        }
+    });
 });
 
 //结案

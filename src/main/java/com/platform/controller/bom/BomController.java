@@ -412,6 +412,43 @@ public class BomController extends AbstractController {
     }
 
     /**
+     * BOM零配件列表-删除行
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/deleteBomSub", method = RequestMethod.POST)
+    @ResponseBody
+    public Object deleteBomSub(HttpServletRequest request) {
+        HttpJsonResult<Object> jsonResult = new HttpJsonResult<Object>();
+        String id = request.getParameter("id");
+        BomSub dbBomSub = bomSubService.getById(Long.parseLong(id));
+        if (dbBomSub == null) {
+            log.error("[BomController][deleteBomSub]BOM SUB不存在，操作失败！bomSubId={}", id);
+            jsonResult.setMessage("BOM零配件数据不存在，操作失败！");
+            return jsonResult;
+        }
+        BomMain dbBomMain = bomMainService.getById(dbBomSub.getBomId());
+        if (dbBomMain == null) {
+            log.error("[BomController][deleteBomSub]BOM不存在，操作失败！bomId={}", dbBomSub.getBomId());
+            jsonResult.setMessage("BOM不存在，操作失败！");
+            return jsonResult;
+        }
+        if (BomMain.StatusEnum.CLOSED.getStatus().equals(dbBomMain.getStatus())) {
+            log.error("[BomController][deleteBomSub]该BOM已结案，操作失败！bomId={}", id);
+            jsonResult.setMessage("该BOM已结案，操作失败！");
+            return jsonResult;
+        }
+        ServiceResult<Integer> subResult = bomSubService.deleteById(dbBomSub.getId());
+        if (!subResult.getSuccess()) {
+            log.error("[BomController][deleteBomSub]更新bomSub.isDelete失败！bomId={}", id);
+            jsonResult.setMessage("操作失败！");
+            return jsonResult;
+        }
+        jsonResult.setData(subResult.getSuccess());
+        return jsonResult;
+    }
+
+    /**
      * 提交保存发货数量
      * @param request
      * @return
