@@ -58,6 +58,7 @@
      data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
     <table id="dataGridBomSub"></table>
     <input name="bomStatus" id="bomStatus" type="hidden"/>
+    <input name="showDetailWinBomId" id="showDetailWinBomId" type="hidden"/>
 </div>
 
 <div id="showDetailWinTb" >
@@ -117,6 +118,59 @@
 
         </table>
     </form>
+</div>
+
+<!-- BOM零配件列表-新增行 -->
+<div id="rowInputInfo" style="padding:10px;display:none;" title="新增行">
+    <table>
+        <tr>
+            <td>序号</td>
+            <td><input id="serialNo_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>零配件名称</td>
+            <td><input id="name_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>材质/品牌</td>
+            <td><input id="brand_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>规格/尺寸</td>
+            <td><input id="specifications_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>单位</td>
+            <td><input id="unit_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>单台用量</td>
+            <td><input id="singleAmount_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>库存</td>
+            <td><input id="stockAmount_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>备货</td>
+            <td><input id="stockUpAmount_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>申购</td>
+            <td><input id="purchaseAmount_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>物料交期</td>
+            <td><input id="deliveryDate_add" type="text"/></td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td><input id="remark_add" type="text"/></td>
+        </tr>
+    </table>
+    </br>
+    <div style="text-align:center"><input id="saveBtn" type="button" value="保存" class="l-btn" style=" font-size: 12px;line-height: 24px; width: 52px; font-family: 微软雅黑"/>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -259,6 +313,7 @@ $(function(){
 function showFormWin(rowIndex,rowData){
     var selectedRow = $('#dataGrid').datagrid('getSelected');
     $('#bomStatus').val(selectedRow.status);
+    $('#showDetailWinBomId').val(selectedRow.id);
     var queryParametersBomSub = {
         bomId:selectedRow.id
     };
@@ -384,7 +439,6 @@ $("#add").click(function(){
 //提交保存发货数量
 $("#saveDeliveryAmount").click(function(){
     var bomStatus = $("#bomStatus").val();
-    console.log(bomStatus);
     if(bomStatus == 1){
         $.messager.alert('提示','该BOM已结案！');
         return false;
@@ -448,6 +502,77 @@ $("#deleteDetailLine").click(function(){
 
                 }
             });
+        }
+    });
+});
+
+//BOM零配件列表-新增行
+$("#addDetailLine").click(function(){
+    $("#serialNo_add").val("");
+    $("#name_add").val("");
+    $("#brand_add").val("");
+    $("#specifications_add").val("");
+    $("#unit_add").val("");
+    $("#singleAmount_add").val("");
+    $("#stockAmount_add").val("");
+    $("#stockUpAmount_add").val("");
+    $("#purchaseAmount_add").val("");
+    $("#deliveryDate_add").val("");
+    $("#remark_add").val("");
+
+    $("#rowInputInfo").show();
+    $("#rowInputInfo").dialog({
+        collapsible: true,
+        minimizable: false,
+        maximizable: false,
+        height:400,
+        width:300
+    });
+});
+
+//BOM零配件列表-新增行-保存
+$("#saveBtn").click(function(){
+    if(!$.isNotBlank($("#serialNo_add").val())){
+        $.messager.alert("提示","请填写序号","info");
+        return false;
+    }
+    if(!$.isNotBlank($("#name_add").val())){
+        $.messager.alert("提示","请填写零配件名称","info");
+        return false;
+    }
+    if(!$.isNotBlank($("#singleAmount_add").val())){
+        $.messager.alert("提示","请填写单台用量","info");
+        return false;
+    }
+    $.messager.progress({text:"提交中..."});
+    jQuery.ajax({
+        url: "/bom/saveBomSubRow",
+        data:{
+            "bomId": $("#showDetailWinBomId").val(),
+            "serialNo": $("#serialNo_add").val(),
+            "name": $("#name_add").val(),
+            "brand": $("#brand_add").val(),
+            "specifications": $("#specifications_add").val(),
+            "unit": $("#unit_add").val(),
+            "singleAmount": $("#singleAmount_add").val(),
+            "stockAmount": $("#stockAmount_add").val(),
+            "stockUpAmount": $("#stockUpAmount_add").val(),
+            "purchaseAmount": $("#purchaseAmount_add").val(),
+            "deliveryDate": $("#deliveryDate_add").val(),
+            "remark": $("#remark_add").val()
+        },
+        type: "POST",
+        success: function(result) {
+            $.messager.progress('close');
+            if(result.success == true){
+                $('#dataGridBomSub').datagrid('reload');
+                $("#rowInputInfo").dialog("close");
+            }else
+                $.messager.alert('错误', result.message, 'error');
+        },
+        fail: function(data) {
+            $.messager.progress('close');
+            $.messager.alert('错误',"保存信息出错,请联系管理员！");
         }
     });
 });

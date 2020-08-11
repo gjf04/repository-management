@@ -18,6 +18,8 @@ public interface BomSubService {
 
     public List<BomSub> getByBomId(Long bomId);
 
+    public List<BomSub> getBomSubByCondition(Map<String, Object> paramMap);
+
     public ServiceResult<Map<String, Object>> getBomSubList(Map<String, Object> paramMap, PagerInfo pagerInfo);
 
     public ServiceResult<Integer> insert(BomSub bomSub);

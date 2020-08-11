@@ -35,6 +35,11 @@ public class BomSubServiceImpl implements BomSubService {
     }
 
     @Override
+    public List<BomSub> getBomSubByCondition(Map<String, Object> paramMap){
+        return bomSubDao.getBomSubByCondition(paramMap);
+    }
+
+    @Override
     public ServiceResult<Map<String, Object>> getBomSubList(Map<String, Object> paramMap, PagerInfo pagerInfo) {
         ServiceResult<Map<String, Object>> result = new ServiceResult<Map<String, Object>>();
         Map<String, Object> map = new HashMap<String, Object>();

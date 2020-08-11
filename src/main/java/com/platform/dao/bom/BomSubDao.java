@@ -28,6 +28,10 @@ public class BomSubDao extends AbstractDao {
         return this.getSqlSession().selectList(getNamespacePrefix() + "getBomSubList", paramMap);
     }
 
+    public List<BomSub> getBomSubByCondition(Map<String, Object> paramMap){
+        return this.getSqlSession().selectList(getNamespacePrefix() + "getBomSubByCondition", paramMap);
+    }
+
     public Integer getBomSubListCount(Map<String, Object> params){
         return this.getSqlSession().selectOne(getNamespacePrefix()+"getBomSubListCount", params);
     }

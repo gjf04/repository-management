@@ -7,6 +7,7 @@ import com.gao.common.ServiceResult;
 import com.gao.common.util.JsonUtil;
 
 import com.gao.common.util.StringUtil;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import com.platform.controller.AbstractController;
 import com.platform.entity.BaseEntity;
@@ -14,6 +15,7 @@ import com.platform.entity.bom.BomDeliveryDetail;
 import com.platform.entity.bom.BomMain;
 
 import com.platform.entity.bom.BomSub;
+import com.platform.entity.system.Role;
 import com.platform.entity.system.UserDepartment;
 import com.platform.entity.system.UserInfo;
 import com.platform.entity.system.UserRole;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -446,6 +449,77 @@ public class BomController extends AbstractController {
         }
         jsonResult.setData(subResult.getSuccess());
         return jsonResult;
+    }
+
+    @RequestMapping(value = { "saveBomSubRow" }, method = { RequestMethod.POST })
+    @ResponseBody
+    public HttpJsonResult<Object> saveBomSubRow(@RequestParam(required = true) String bomId,
+                                                @RequestParam(required = true) String serialNo,
+                                                @RequestParam(required = false) String name,
+                                                @RequestParam(required = false) String brand,
+                                                @RequestParam(required = false) String specifications,
+                                                @RequestParam(required = false) String unit,
+                                                @RequestParam(required = false) String singleAmount,
+                                                @RequestParam(required = false) String stockAmount,
+                                                @RequestParam(required = false) String stockUpAmount,
+                                                @RequestParam(required = false) String purchaseAmount,
+                                                @RequestParam(required = false) String deliveryDate,
+                                                @RequestParam(required = false) String remark,
+                                           HttpServletRequest request, HttpServletResponse response) {
+        HttpJsonResult<Object> result = new HttpJsonResult<Object>();
+        BomMain bomMain = bomMainService.getById(Long.parseLong(bomId));
+        if(bomMain == null){
+            log.error("[BomController][saveBomSubRow]BOM单不存在,bomId={}", bomId);
+            result.setMessage("保存失败，请稍后重试！");
+            return result;
+        }
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("bomId", Long.parseLong(bomId));
+        paramMap.put("serialNo", serialNo);
+        List<BomSub> bomSubList = bomSubService.getBomSubByCondition(paramMap);
+        if(bomSubList != null && bomSubList.size() > 0){
+            log.error("[BomController][saveBomSubRow]序号为{}的零配件已存在", serialNo);
+            result.setMessage("该序号的零配件已存在，请更改序号后重试！");
+            return result;
+        }
+        String nickName = getCurrentUserNickName(request);
+        BomSub bomSub = new BomSub();
+        bomSub.setBomId(bomMain.getId());
+        bomSub.setSerialNo(serialNo);
+        bomSub.setName(name);
+        bomSub.setBrand(brand);
+        bomSub.setSpecifications(specifications);
+        bomSub.setUnit(unit);
+        if(!"".equals(singleAmount) && CommUtil.canToInt(singleAmount)){
+            bomSub.setSingleAmount(Integer.parseInt(singleAmount));
+        }else{
+            bomSub.setSingleAmount(1);
+        }
+        bomSub.setTotalAmount(bomSub.getSingleAmount() * bomMain.getNum());
+        if(!"".equals(stockAmount) && CommUtil.canToInt(stockAmount)){
+            bomSub.setStockAmount(Integer.parseInt(stockAmount));
+        }
+        if(!"".equals(stockUpAmount) && CommUtil.canToInt(stockUpAmount)){
+            bomSub.setStockUpAmount(Integer.parseInt(stockUpAmount));
+        }
+        if(!"".equals(purchaseAmount) && CommUtil.canToInt(purchaseAmount)){
+            bomSub.setPurchaseAmount(Integer.parseInt(purchaseAmount));
+        }
+        bomSub.setDeliveryDate(deliveryDate);
+        bomSub.setDeliveryAmount(0);
+        bomSub.setCreatedBy(nickName);
+        bomSub.setUpdatedBy(nickName);
+        bomSub.setRemark(remark);
+        try {
+            ServiceResult<Integer> bomSubResult = bomSubService.insert(bomSub);
+            if (!bomSubResult.getSuccess()) {
+                result.setMessage("保存失败，请稍后重试！");
+            }
+        } catch (Exception e) {
+            result.setMessage("保存失败，请稍后重试！");
+            log.error("保存失败，请稍后重试！error={}" + Throwables.getStackTraceAsString(e));
+        }
+        return result;
     }
 
     /**

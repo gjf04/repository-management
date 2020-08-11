@@ -46,6 +46,13 @@
     <include refid="bomSubQuery"/>
   </select>
 
+    <select id="getBomSubByCondition"  parameterType="Map"  resultMap="bomSubMap">
+        SELECT id, <include refid="Base_Column_List"/>
+        FROM <include refid="table"/>
+        <include refid="bomSubQuery"/>
+        ORDER BY id
+    </select>
+
     <sql id="bomSubQuery">
         <where>
             is_delete = 0
