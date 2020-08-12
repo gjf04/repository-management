@@ -83,13 +83,28 @@ public class IndexController extends AbstractController{
 				resourceInfo.setChildren(pageMap.get(resourceInfo.getId()));
 			}
 			//去掉无任何页面的模块
-			for(int i = 0; i < moduleList.size(); i++){
-				if(moduleList.get(i).getChildren() == null || moduleList.get(i).getChildren().size() == 0){
-					moduleList.remove(i);
-				}
-			}
+			cleanModuleList(moduleList);
 		}
 		return moduleList;
+	}
+
+	/**
+	 * 去掉无任何页面的模块
+	 * */
+	private void cleanModuleList(List<ResourceInfo> moduleList){
+		boolean repeat = false;
+		for(int i = 0; i < moduleList.size(); i++){
+			if(moduleList.get(i) == null){
+				continue;
+			}
+			if(moduleList.get(i).getChildren() == null || moduleList.get(i).getChildren().size() == 0){
+				moduleList.remove(i);
+				repeat = true;
+			}
+		}
+		if(repeat){
+			cleanModuleList(moduleList);
+		}
 	}
 
 

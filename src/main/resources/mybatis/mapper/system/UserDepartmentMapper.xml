@@ -17,7 +17,7 @@
     values (#{userId,jdbcType=INTEGER}, #{departmentId,jdbcType=INTEGER})
   </insert>
 
-  <delete id="deleteByUserId" parameterType="java.lang.Integer">
+  <delete id="deleteByUserId" parameterType="java.lang.Long">
     delete from <include refid="table"/>
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
