@@ -54,7 +54,7 @@
 </div>
 
 <!-- 双击弹出框-查看明细 -->
-<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1200px;height:660px"
+<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1200px;height:600px"
      data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
     <table id="dataGridBomSub"></table>
     <input name="bomStatus" id="bomStatus" type="hidden"/>
@@ -70,7 +70,7 @@
 </div>
 
 <!-- 查看发货明细 -->
-<div id="showDeliveryDetailWin" class="easyui-window" title="查看发货明细" style="width:1200px;height:680px"
+<div id="showDeliveryDetailWin" class="easyui-window" title="查看发货明细" style="width:1200px;height:600px"
      data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
     <div data-options="region:'north',title:'查询条件',border:false" style="height: 40px;" class="zoc">
         <form onsubmit="return false;" id="searchDeliveryDetailForm">
