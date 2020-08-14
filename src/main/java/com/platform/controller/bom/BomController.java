@@ -168,7 +168,7 @@ public class BomController extends AbstractController {
     /**
      * BOM导入
      */
-    @RequestMapping(value =  "importBomMain" )
+    @RequestMapping(value =  "importBomMain" , method = RequestMethod.POST)
     @ResponseBody
     public Object importCustomer(HttpServletRequest request,
                                HttpServletResponse response) {
