@@ -62,6 +62,12 @@
             <if test="serialNo != null and serialNo != ''">
                 AND serial_no = #{serialNo}
             </if>
+            <if test="name != null and name != ''">
+                <![CDATA[ AND name like CONCAT('%',#{name},'%') ]]>
+            </if>
+            <if test="specifications != null and specifications != ''">
+                <![CDATA[ AND specifications like CONCAT('%',#{specifications},'%') ]]>
+            </if>
         </where>
 
     </sql>

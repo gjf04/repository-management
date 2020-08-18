@@ -138,9 +138,17 @@ public class BomController extends AbstractController {
     public void bomSubList(HttpServletRequest request, HttpServletResponse response) {
         Map <String, Object> criteria = Maps.newHashMap();
         try {
-            String bomId = request.getParameter("bomId");
+            String bomId = request.getParameter("showDetailWinBomId");
+            String name = request.getParameter("showDetailWinName");
+            String specifications = request.getParameter("showDetailWinSpecifications");
             if(bomId != null && !"".equals(bomId)){
                 criteria.put("bomId", Long.parseLong(bomId));
+            }
+            if(name != null && !"".equals(name)){
+                criteria.put("name", name);
+            }
+            if(specifications != null && !"".equals(specifications)){
+                criteria.put("specifications", specifications);
             }
             Map<String, Object> dataMap = new HashMap<String, Object>();
             PagerInfo pager = WebUtil.handlerPagerInfo(request, dataMap);
