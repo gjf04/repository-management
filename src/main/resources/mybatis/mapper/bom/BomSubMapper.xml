@@ -33,7 +33,7 @@
 
     <select id="getBomSubList"  parameterType="Map"  resultMap="bomSubMap">
         SELECT id, <include refid="Base_Column_List"/>,
-        total_amount-ifnull(delivery_amount, 0) as current_delivery_amount
+        0 as current_delivery_amount
         FROM <include refid="table"/>
         <include refid="bomSubQuery"/>
         ORDER BY id
