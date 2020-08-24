@@ -560,7 +560,9 @@ public class BomController extends AbstractController {
             bomDeliveryDetail.setDeliveryBy(nickName);
             bomDeliveryDetail.setCreatedBy(nickName);
             bomDeliveryDetail.setUpdatedBy(nickName);
-            bomDeliveryDetailList.add(bomDeliveryDetail);
+            if(bomDeliveryDetail.getDeliveryAmount() > 0){
+                bomDeliveryDetailList.add(bomDeliveryDetail);
+            }
         }
         if(bomDeliveryDetailList.size() > 0){
             ServiceResult<Integer> batchInsertResult = bomDeliveryDetailService.batchInsert(bomDeliveryDetailList);
@@ -586,7 +588,9 @@ public class BomController extends AbstractController {
             bomSub.setSingleAmount(list.get(i).getSingleAmount());
             bomSub.setTotalAmount(bomSub.getSingleAmount() * bomMain.getNum());
             bomSub.setCurrentDeliveryAmount(list.get(i).getCurrentDeliveryAmount());
-            bomSubService.updateDeliveryAmount(bomSub);
+            if(bomSub.getCurrentDeliveryAmount() > 0){
+                bomSubService.updateDeliveryAmount(bomSub);
+            }
         }
         jsonResult.setData(true);
         return jsonResult;

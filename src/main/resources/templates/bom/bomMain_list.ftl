@@ -54,7 +54,7 @@
 </div>
 
 <!-- 双击弹出框-查看明细 -->
-<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1200px;height:695px"
+<div id="showDetailWin" class="easyui-window" title="查看明细" style="width:1200px;height:645px"
      data-options="closed:true,iconCls:'icon-search',modal:true,collapsible:false,minimizable:false,maximizable:false">
 
     <div data-options="region:'north',title:'查询条件',border:false" style="height: 35px;" class="zoc">
@@ -79,7 +79,7 @@
 
         </form>
     </div>
-    <div region="center" border="false" style="height: 620px;">
+    <div region="center" border="false" style="height: 570px;">
         <table id="dataGridBomSub"></table>
     </div>
 
@@ -338,9 +338,9 @@ $(function(){
 });
 
 //双击看明细
-var currentClickRowIndex = 0;
+var currentClickRowIndex = -1;
 function showFormWin(rowIndex,rowData){
-    currentClickRowIndex = 0;
+    currentClickRowIndex = -1;
     var selectedRow = $('#dataGrid').datagrid('getSelected');
     $('#bomStatus').val(selectedRow.status);
     $('#showDetailWinBomId').val(selectedRow.id);
@@ -364,6 +364,7 @@ function showFormWin(rowIndex,rowData){
         onClickCell: function(index,field,value){
             $(this).datagrid('beginEdit', index);
             var ed = $(this).datagrid('getEditor', {index:index,field:field});
+            ed.target.numberbox("setValue", '');
             ed.target.next('span').find('input').focus();//获取焦点
             currentClickRowIndex = index;
         },
@@ -474,9 +475,10 @@ function showFormWin(rowIndex,rowData){
 
 $(window).keydown(function(event){
     if(event.keyCode == 13){
-        if(currentClickRowIndex > 0){
+        if(currentClickRowIndex > -1){
             $("#dataGridBomSub").datagrid('beginEdit', currentClickRowIndex + 1);
             var ed = $("#dataGridBomSub").datagrid('getEditor', { index: currentClickRowIndex + 1, field: 'currentDeliveryAmount' });
+            ed.target.numberbox("setValue", '');
             ed.target.next('span').find('input').focus();//获取焦点
             currentClickRowIndex = currentClickRowIndex + 1;
         }
