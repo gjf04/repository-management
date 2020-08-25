@@ -501,11 +501,18 @@ $("#saveDeliveryAmount").click(function(){
         if (r){
             $.messager.progress({text:"提交中..."});
             var rows = $("#dataGridBomSub").datagrid("getRows");
+            var dataArray = new Array();
             for(var i=0;i<rows.length;i++)
             {
                 $('#dataGridBomSub').datagrid('endEdit', i);
+                dataArray.push({
+                    id : rows[i].id,
+                    bomId : rows[i].bomId,
+                    singleAmount : rows[i].singleAmount,
+                    currentDeliveryAmount : rows[i].currentDeliveryAmount
+                });
             }
-            var jsonDataStr = JSON.stringify(rows);
+            var jsonDataStr = JSON.stringify(dataArray);
             //console.log(jsonDataStr);
             $.ajax({
                 type:"POST",

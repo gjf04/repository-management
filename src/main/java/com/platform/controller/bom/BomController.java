@@ -9,6 +9,8 @@ import com.gao.common.util.JsonUtil;
 import com.gao.common.util.StringUtil;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.platform.controller.AbstractController;
 import com.platform.entity.BaseEntity;
 import com.platform.entity.bom.BomDeliveryDetail;
@@ -30,6 +32,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -543,26 +546,32 @@ public class BomController extends AbstractController {
         Long bomId = null;
         String nickName = getCurrentUserNickName(request);
         String jsonDataStr = request.getParameter("jsonDataStr");
+
         List<BomSub> list = JSONArray.parseArray(jsonDataStr, BomSub.class);
         for(int i = 0; i < list.size(); i++){
             BomDeliveryDetail bomDeliveryDetail = new BomDeliveryDetail();
             if(i == 0){
                 bomId = list.get(i).getBomId();
             }
+            if(list.get(i).getCurrentDeliveryAmount() == null || list.get(i).getCurrentDeliveryAmount() <= 0){
+                continue;
+            }
+            BomSub dbBomSub = bomSubService.getById(list.get(i).getId());
+            if(dbBomSub == null){
+                continue;
+            }
             bomDeliveryDetail.setBomId(bomId);
-            bomDeliveryDetail.setSerialNo(list.get(i).getSerialNo());
-            bomDeliveryDetail.setName(list.get(i).getName());
-            bomDeliveryDetail.setBrand(list.get(i).getBrand());
-            bomDeliveryDetail.setSpecifications(list.get(i).getSpecifications());
-            bomDeliveryDetail.setUnit(list.get(i).getUnit());
+            bomDeliveryDetail.setSerialNo(dbBomSub.getSerialNo());
+            bomDeliveryDetail.setName(dbBomSub.getName());
+            bomDeliveryDetail.setBrand(dbBomSub.getBrand());
+            bomDeliveryDetail.setSpecifications(dbBomSub.getSpecifications());
+            bomDeliveryDetail.setUnit(dbBomSub.getUnit());
             bomDeliveryDetail.setDeliveryDate(new Date());
             bomDeliveryDetail.setDeliveryAmount(list.get(i).getCurrentDeliveryAmount());
             bomDeliveryDetail.setDeliveryBy(nickName);
             bomDeliveryDetail.setCreatedBy(nickName);
             bomDeliveryDetail.setUpdatedBy(nickName);
-            if(bomDeliveryDetail.getDeliveryAmount() > 0){
-                bomDeliveryDetailList.add(bomDeliveryDetail);
-            }
+            bomDeliveryDetailList.add(bomDeliveryDetail);
         }
         if(bomDeliveryDetailList.size() > 0){
             ServiceResult<Integer> batchInsertResult = bomDeliveryDetailService.batchInsert(bomDeliveryDetailList);
