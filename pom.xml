@@ -17,7 +17,7 @@
         <version-guava>28.0-jre</version-guava>
         <version-lombok>1.18.8</version-lombok>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
-        <version-commons-io>2.4</version-commons-io>
+        <version-commons-io>2.7</version-commons-io>
         <curator_version>4.1.0</curator_version>
         <httpclient>4.5.9</httpclient>
     </properties>
